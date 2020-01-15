@@ -23,21 +23,19 @@ class obj:
             return True
 
 
-size = width, height = 600, 600
+size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
 
 White = (255, 255, 255)
 Black = (0, 0, 0)
-x = 602
+x = 850
 y = 300
 
 rects = []
 
 def randoma(x):
-    n = random.randint(1, 5)
-    if n == 1:
-        rects.append(obj(x))
-    elif n == 2:
+    n = random.randint(2, 5)
+    if n == 2:
         for i in range(n):
             rects.append(obj(x))
             x += 300
