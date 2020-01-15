@@ -10,17 +10,17 @@ class obj:
         self.clock = pygame.time.Clock()
 
     def run(self):
-        self.clock.tick(350)
+        self.clock.tick(300)
         if self.x > 0:
             self.x -= self.speed
+            return False
         else:
-            self.x = 602
-        del self
-
+            return True
 
     def draw(self, screen):
         pygame.draw.rect(screen, White, (self.x - 25, self.y - 25, 50, 50))
-        self.run()
+        if self.run():
+            return True
 
 
 size = width, height = 600, 600
@@ -30,22 +30,30 @@ White = (255, 255, 255)
 Black = (0, 0, 0)
 x = 602
 y = 300
-width_inside_obj = 100
 
 rects = []
 
 def randoma(x):
-    n = random.randint(1, 3)
+    n = random.randint(1, 5)
     if n == 1:
         rects.append(obj(x))
     elif n == 2:
         for i in range(n):
             rects.append(obj(x))
             x += 300
-    else:
+    elif n == 3:
         for i in range(n):
             rects.append(obj(x))
             x += 200
+    elif n == 4:
+        for i in range(2):
+            rects.append(obj(x))
+            x += 50
+    elif n == 5:
+        for i in range(3):
+            rects.append(obj(x))
+            x += 50
+
 
 
 
@@ -65,7 +73,10 @@ while running:
         flag = False
         print(rects)
     for i in rects:
-        i.draw(screen)
+        if i.draw(screen):
+            del rects[rects.index(i)]
+            if len(rects) == 0:
+                randoma(x)
     pygame.display.flip()
 
 pygame.quit()
