@@ -18,7 +18,7 @@ def addsprite(art):
     # создадим спрайт
     sprite = pygame.sprite.Sprite()
     # определим его вид
-    sprite.image = pygame.image.load(f'data/{art}.bmp')
+    sprite.image = pygame.image.load(f'data/{art}.png')
     # и размеры
     sprite.rect = sprite.image.get_rect(bottomright=(50, 70))
     # добавим спрайт в группу
@@ -32,7 +32,7 @@ image_surf = pygame.image.load('data/background1.bmp')
 image_rect = image_surf.get_rect(bottomright=(800, 310))
 screen.blit(image_surf, image_rect)
 addsprite('hero')
-addsprite('hero_run_1')
+
 all_sprites.draw(screen)
 pygame.display.update()
 
