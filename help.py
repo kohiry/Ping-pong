@@ -46,7 +46,7 @@ def download_sound():  # download sound for jump, die, or score
             'jump_sound': pygame.mixer.Sound(r'Sound\jump.ogg'),
             'score_sound': pygame.mixer.Sound(r'Sound\score.ogg')}
 
-def hero_sprite():  # download sprite: dictionary with sprite hero and sprite background
+def hero_sprites():  # download sprite: dictionary with sprite hero and sprite background
     return ({'move':[pygame.image.load(f'data/hero_run_1.png'),
             pygame.image.load(f'data/hero_run_2.png')],
             'jump':pygame.image.load(f'data/hero.png'),
@@ -57,7 +57,7 @@ def hero_sprite():  # download sprite: dictionary with sprite hero and sprite ba
 
 def draw_animation():  # anim_count - 0, for count sprite:
     global anim_count
-    screen.blit(image_surf, (0, 0))
+    screen.blit(background, (0, 0))
     if anim_count + 1 >= 15:
         anim_count = 0
     if move:

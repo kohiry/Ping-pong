@@ -7,6 +7,10 @@ pygame.init()
 size = width, height = 600, 600
 screen = pygame.display.set_mode(size)
 
+hero_sprite, background = help.hero_sprites()
+game_sound = help.download_sound()
+x, y = 20, 240
+
 running = True
 clock = pygame.time.Clock()
 while running:
