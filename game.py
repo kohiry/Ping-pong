@@ -17,6 +17,8 @@ anim_count = 0
 
 x, y = 10, 240
 
+rects = []
+
 def random_for_move_obstacles(x):  # function for spawn random obstacles
     n = random.randint(2, 5)
     if n == 2:
@@ -74,5 +76,14 @@ while running:
         anim_count = 0
     jumps()
     draw_animation()
+    if flag:
+        randoma(x)
+        flag = False
+        print(rects)
+    for i in rects:
+        if i.draw(screen):
+            del rects[rects.index(i)]
+            if len(rects) == 0:
+                randoma(x)
     pygame.display.update()
 pygame.quit()
