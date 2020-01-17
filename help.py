@@ -1,8 +1,8 @@
 import pygame
 import random
+pygame.init()
 
-
-class obj:
+class obj:  # class for obstacles
     def __init__(self, x):
         self.x = x
         self.y = 300
@@ -22,7 +22,7 @@ class obj:
         if self.run():
             return True
 
-def random_for_move_obstacles(x):
+def random_for_move_obstacles(x):  # function for spawn random obstacles
     n = random.randint(2, 5)
     if n == 2:
         for i in range(n):
@@ -41,14 +41,37 @@ def random_for_move_obstacles(x):
             rects.append(obj(x))
             x += 50
 
-def download():
+def download_sound():  # download sound for jump, die, or score
     return {'die_sound': pygame.mixer.Sound(r'Sound\die.ogg'),
             'jump_sound': pygame.mixer.Sound(r'Sound\jump.ogg'),
             'score_sound': pygame.mixer.Sound(r'Sound\score.ogg')}
 
-def hero_sprite():
-    return {'move':[pygame.image.load(f'data/hero_run_1.png'),
+def hero_sprite():  # download sprite: dictionary with sprite hero and sprite background
+    return ({'move':[pygame.image.load(f'data/hero_run_1.png'),
             pygame.image.load(f'data/hero_run_2.png')],
             'jump':pygame.image.load(f'data/hero.png'),
             'die':pygame.image.load(f'data/hero_die.png'),
-            'score':pygame.image.load(f'data/hero_get_score.png'),               'secret move': pygame.image.load(f'data/hero_move_eyes.png')}
+            'score':pygame.image.load(f'data/hero_get_score.png'),
+            'secret move': pygame.image.load(f'data/hero_move_eyes.png')},
+            pygame.image.load('data/background1.bmp'))
+
+def draw_animation():  # anim_count - 0, for count sprite:
+    global anim_count
+    screen.blit(image_surf, (0, 0))
+    if anim_count + 1 >= 15:
+        anim_count = 0
+    if move:
+        screen.blit(hero_sprite['move'][anim_count // 8], (x, y))
+        anim_count += 1
+    else:
+        screen.blit(hero_sprite['jump'], (x, y))
+
+def jumps():  # move, IsJump - bool; jump = 10, y = <any number>
+    global jump, y, IsJump, move
+    if IsJump:
+        y -= jump
+        jump -= 1
+    if jump <= -11:
+        move = True
+        IsJump = False
+        jump = 10
