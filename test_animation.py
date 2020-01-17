@@ -1,47 +1,62 @@
 import pygame
-import os
 pygame.init()
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    image = pygame.image.load(fullname).convert()
-
 size = width, height = 800, 310
 screen = pygame.display.set_mode(size)
+pygame.display.set_caption('animation sprite')
 
-# создадим группу, содержащую все спрайты
-all_sprites = pygame.sprite.Group()
-
-def addsprite(art):
-    print(1)
-    # создадим спрайт
-    sprite = pygame.sprite.Sprite()
-    # определим его вид
-    sprite.image = pygame.image.load(f'data/{art}.png')
-    # и размеры
-    sprite.rect = sprite.image.get_rect(bottomright=(50, 70))
-    # добавим спрайт в группу
-    all_sprites.add(sprite)
-    sprite.rect.x = 50
-    sprite.rect.y = 240
-
-
+hero_sprite = {'move':[pygame.image.load(f'data/hero_run_1.png'),
+               pygame.image.load(f'data/hero_run_2.png')],
+               'jump':pygame.image.load(f'data/hero.png'),
+               'die':pygame.image.load(f'data/hero_die.png'),
+               'score':pygame.image.load(f'data/hero_get_score.png'),
+               'secret move': pygame.image.load(f'data/hero_move_eyes.png')}
 
 image_surf = pygame.image.load('data/background1.bmp')
-image_rect = image_surf.get_rect(bottomright=(800, 310))
-screen.blit(image_surf, image_rect)
-addsprite('hero')
 
-all_sprites.draw(screen)
-pygame.display.update()
+move = True
+IsJump = False
+jump = 10
+anim_count = 0
+
+x, y = 10, 240
+
+def draw():
+    global anim_count
+    screen.blit(image_surf, (0, 0))
+    if anim_count + 1 >= 15:
+        anim_count = 0
+    if move:
+        screen.blit(hero_sprite['move'][anim_count // 8], (x, y))
+        anim_count += 1
+    else:
+        screen.blit(hero_sprite['jump'], (x, y))
+
+def jumps():
+    global jump, y, IsJump, move
+    if IsJump:
+        y -= jump
+        jump -= 1
+    if jump <= -11:
+        move = True
+        IsJump = False
+        jump = 10
+
 
 running = True
 clock = pygame.time.Clock()
 while running:
+    clock.tick(30)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+        move = False
+        IsJump = True
+        anim_count = 0
+    jumps()
+    draw()
+    pygame.display.update()
 pygame.quit()
