@@ -8,25 +8,90 @@ size = width, height = 800, 310
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('animation sprite')
 
+class obj:  # class for obstacles
+    def __init__(self, x):
+        self.x = x
+        self.y = 220
+        self.speed = 10
+        self.clock = pygame.time.Clock()
+
+    def run(self):
+        self.clock.tick(300)
+        if self.x > 0:
+            self.x -= self.speed
+            return False
+        else:
+            return True
+
+    def draw(self, screen):
+        screen.blit(pygame.image.load('data/obstacle_1.png'), (self.x, self.y))
+        if self.run():
+            return True
+
+class Hero:
+    def __init_(self):
+        self.x = 10
+        self.y = 240
+        self.speed = 10
+        self.clock = pygame.time.Clock()
+        self.jump = 10
+        self.isJump = False
+        self.move = False
+        self.anim_count = 0
+        self.hero_sprite = {'move':[pygame.image.load(f'data/hero_run_1.png'),
+                            pygame.image.load(f'data/hero_run_2.png')],
+                            'jump':pygame.image.load(f'data/hero.png'),
+                            'die':pygame.image.load(f'data/hero_die.png'),
+                            'score':pygame.image.load(f'data/hero_get_score.png'),
+                            'secret move': pygame.image.load(f'data/hero_move_eyes.png')}
+
+    def jumps(self):  # move, IsJump - bool; jump = 10, y = <any number>
+        if self.IsJump:
+            self.y -= self.jump
+            self.jump -= 1
+        if self.jump <= -16:
+            self.move = True
+            self.IsJump = False
+            self.jump = 15
+
+    def draw_animation(self, screen):  # anim_count - 0, for count sprite:
+        screen.blit(background, (0, 0))
+        if self.anim_count + 1 >= 15:
+            self.anim_count = 0
+        if self.move:
+            screen.blit(hero_sprite['move'][anim_count // 8], (x, y))
+            self.anim_count += 1
+        else:
+            screen.blit(hero_sprite['jump'], (x, y))
+
+class Sound:
+    def __init__(self):
+        self.sound = {'die_sound': pygame.mixer.Sound(r'Sound\die.ogg'),
+                      'jump_sound': pygame.mixer.Sound(r'Sound\jump.ogg'),
+                      'score_sound': pygame.mixer.Sound(r'Sound\score.ogg')}
 
 
 move = True
 IsJump = False
-jump = 10
+jump = 15
 anim_count = 0
+White = (0, 0, 0)
 
 x, y = 10, 240
+x_rect = 850
+y_rect = 300
 
 rects = []
 
+
 def random_for_move_obstacles(x):  # function for spawn random obstacles
-    n = random.randint(2, 5)
+    n = random.randint(2, 6)
     if n == 2:
-        for i in range(n):
+        for i in range(2):
             rects.append(obj(x))
             x += 300
     elif n == 3:
-        for i in range(n):
+        for i in range(4):
             rects.append(obj(x))
             x += 200
     elif n == 4:
@@ -37,31 +102,13 @@ def random_for_move_obstacles(x):  # function for spawn random obstacles
         for i in range(3):
             rects.append(obj(x))
             x += 50
+    elif n == 6:
+        for i in range(6):
+            rects.append(obj(x))
+            x += 200
 
-def draw_animation():  # anim_count - 0, for count sprite:
-    global anim_count
-    screen.blit(background, (0, 0))
-    if anim_count + 1 >= 15:
-        anim_count = 0
-    if move:
-        screen.blit(hero_sprite['move'][anim_count // 8], (x, y))
-        anim_count += 1
-    else:
-        screen.blit(hero_sprite['jump'], (x, y))
 
-def jumps():  # move, IsJump - bool; jump = 10, y = <any number>
-    global jump, y, IsJump, move
-    if IsJump:
-        y -= jump
-        jump -= 1
-    if jump <= -11:
-        move = True
-        IsJump = False
-        jump = 10
-
-sound = help.download_sound()
-hero_sprite, background = help.hero_sprites()
-
+flag = True
 running = True
 clock = pygame.time.Clock()
 while running:
@@ -77,13 +124,13 @@ while running:
     jumps()
     draw_animation()
     if flag:
-        randoma(x)
+        random_for_move_obstacles(x_rect)
         flag = False
         print(rects)
     for i in rects:
         if i.draw(screen):
             del rects[rects.index(i)]
             if len(rects) == 0:
-                randoma(x)
+                random_for_move_obstacles(x_rect)
     pygame.display.update()
 pygame.quit()
