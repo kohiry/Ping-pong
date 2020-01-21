@@ -31,7 +31,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             pass
-    screen.fill(Black)
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         pass
@@ -45,15 +45,20 @@ while running:
         pass
     elif keys[pygame.K_SPACE]:
         start = True
+
     if start:
-        list_balls.append(classes.Ball(event.pos, screen))
+        list_balls.append(classes.Ball((400, 560), screen))
         bol = True
     else:
-        draw()
-
+        # draw()
+        pass
+    screen.fill(Black)
     if bol:
+
         for i in list_balls:
             i.draw(width, height)
+        pygame.display.flip()
+    pygame.display.update()
     pygame.display.flip()
 
 pygame.quit()

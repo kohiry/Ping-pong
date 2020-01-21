@@ -12,42 +12,42 @@ class Ball:
 
     def run(self, x, y, coord, width, height):
       speed = (x, y)
-      speeds_all = [(-100, -100), (100, 100), (100, -100), (-100, 100)]
+      speeds_all = [(-200, -200), (200, 200), (200, -200), (-200, 200)]
       if speed == speeds_all[0]:
         if coord[0] <= 0:
-          return (100, -100)
+          return (200, -200)
         if coord[1] <= 0:
-          return (-100, 100)
+          return (-200, 200)
         else:
           return speed
       elif speed == speeds_all[1]:
         if coord[0] >= width:
-          return (-100, 100)
+          return (-200, 200)
         if coord[1] >= height:
-          return (100, -100)
+          return (200, -200)
         else:
           return speed
       elif speed == speeds_all[2]:
         if coord[0] >= width:
-          return (-100, -100)
+          return (-200, -200)
         if coord[1] <= 0:
-          return (100, 100)
+          return (200, 200)
         else:
           return speed
       elif speed == speeds_all[3]:
         if coord[0] <= 0:
-          return (100, 100)
+          return (200, 200)
         if coord[1] >= height:
-          return (-100, -100)
+          return (-200, -200)
         else:
           return speed
 
     def draw(self, width, height):
         x, y = self.pos
         self.x, self.y = self.run(self.x, self.y, self.pos, width, height)
-        x += self.x / 80
-        y += self.y / 80
-        self.clock.tick(80)
+        x += self.x // 60
+        y += self.y // 60
+        self.clock.tick(60)
         self.pos = (int(x), int(y))
         pygame.draw.circle(self.screen, (255, 255, 255), self.pos, 10)
 
