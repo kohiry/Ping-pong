@@ -50,3 +50,10 @@ class Ball:
         self.clock.tick(80)
         self.pos = (int(x), int(y))
         pygame.draw.circle(self.screen, (255, 255, 255), self.pos, 10)
+
+
+def menu_sprite():  # download sprite: list with sprite menu
+    sprites = []
+    for i in range(1, 12):
+        sprites.append(pygame.image.load(f'data/menu_{str(i)}.png'))
+    return sprites
