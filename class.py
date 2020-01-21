@@ -33,13 +33,18 @@ class Zombie:  # class for zombie
 
 
 class Building:  # class for objects in game: buildings
-    pass
+    def __init__(self, x, y, image):
+        self.x = x
+        self.y = y
+        self.image = image
 
+    def draw(self, screen):
+        screen.blit(self.image, (self.x, self.y))
 
 class Objects:  # class for weapon, food, clothes
     pass
 
-class Sound:
+class Sound:  # class for downloa and play sound
     def __init__(self):
         r'''
         шаблон загрузки аудиофайлов
@@ -48,25 +53,4 @@ class Sound:
                       'jump_sound': pygame.mixer.Sound(r'Sound\jump.ogg'),
                       'score_sound': pygame.mixer.Sound(r'Sound\score.ogg')}
         '''
-
-
-
-
-'''
-size = width, height = 800, 310
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('tamplate game')
-
-running = True
-clock = pygame.time.Clock()
-while running:
-    clock.tick(30)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_E]: # инвентарь
         pass
-    pygame.display.update()
-pygame.quit()
-'''
