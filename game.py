@@ -10,6 +10,18 @@ White = (255, 255, 255)
 Black = (0, 0, 0)
 list_balls = []
 bol = False
+start = False
+anim_count = 0
+
+sprite_menu = classes.menu_sprite()
+
+def draw():
+    global anim_count
+    if anim_count + 1 >= 55:
+        anim_count = 0
+    screen.blit(sprite_menu[anim_count // 5], (0, 0))
+    anim_count += 1
+
 
 running = True
 clock = pygame.time.Clock()
@@ -18,8 +30,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            list_balls.append(classes.Ball(event.pos, screen))
-            bol = True
+            pass
+    screen.fill(Black)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         pass
@@ -29,7 +41,16 @@ while running:
         pass
     elif keys[pygame.K_d]:
         pass
-    screen.fill(Black)
+    elif keys[pygame.K_d]:
+        pass
+    elif keys[pygame.K_SPACE]:
+        start = True
+    if start:
+        list_balls.append(classes.Ball(event.pos, screen))
+        bol = True
+    else:
+        draw()
+
     if bol:
         for i in list_balls:
             i.draw(width, height)
