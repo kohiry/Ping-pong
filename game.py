@@ -1,14 +1,13 @@
 import pygame
 import random
-import help
 pygame.init()
 
 
 size = width, height = 800, 310
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption('animation sprite')
+pygame.display.set_caption('tamplate game')
 
-class zombie:  # class for zombie
+class Zombie:  # class for zombie
     def __init__(self):
         self.x = 0
         self.y = 220
@@ -56,7 +55,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
+    if keys[pygame.K_E]: # инвентарь
         pass
     pygame.display.update()
 pygame.quit()
