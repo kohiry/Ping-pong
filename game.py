@@ -46,7 +46,7 @@ while running:
     elif keys[pygame.K_SPACE]:
         start = True
 
-    if start:
+    if start:  # сменить список, на просто объект
         list_balls.append(classes.Ball((400, 560), screen))
         bol = True
     else:
