@@ -74,7 +74,7 @@ class Hero:
             self.x += self.speed
 
     def draw(self):
-        pygame.draw.rect(self.x, self.y, self.height.self.width)
+        pygame.draw.rect(self.x, self.y, self.height, self.width)
 
 
 class Enemy:
@@ -94,7 +94,7 @@ class Enemy:
             return self.x + self.speed
 
     def draw(self):
-        pygame.draw.rect(self.x, self.y, self.height.self.width)
+        pygame.draw.rect(self.x, self.y, self.height, self.width)
 
 
 class DrawBackground:
