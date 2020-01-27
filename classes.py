@@ -103,7 +103,14 @@ def draw(x, Dheight):  # недоделал
     height = 120
     for i in range(0, Dheight, jump): # отрисовка разграничивающих полос на поле
         pygame.draw.rect(screen, (255, 255, 255), (x - width//2, i, width, height))
-    
+    # отрисовка счёта
+    font = pygame.font.Font(None, 50)
+    text = font.render("0", 1, (255, 255, 255))
+    text_x = x // 2 - text.get_width() // 2
+    text_y = height // 2 - text.get_height() // 2
+    text_w = text.get_width()
+    text_h = text.get_height()
+    screen.blit(text, (text_x, text_y))
 
 
 
