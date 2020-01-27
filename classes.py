@@ -127,6 +127,8 @@ class DrawBackground:
         screen.blit(self.enemy_txt, (x // 2 - self.enemy_txt.get_width() // 2, self.text_y))  # 1/4 ширины
         screen.blit(self.hero_txt, ((x + x // 2) - self.hero_txt.get_width() // 2, self.text_y))  # 3/4
 
+
+'''
 background = DrawBackground()
 
 size = width, height = 800, 600
@@ -141,3 +143,4 @@ while run:
     pygame.display.flip()
 
 pygame.quit()
+'''
