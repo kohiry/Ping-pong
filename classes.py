@@ -6,7 +6,7 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen):
         self.pos = coord
-        self.x, self.y = -100, -100
+        self.x, self.y = -200, -200
         self.screen = screen
         self.clock = pygame.time.Clock()
 
@@ -44,6 +44,7 @@ class Ball:
 
     def draw(self, width, height):
         x, y = self.pos
+        print(self.run(self.x, self.y, self.pos, width, height))
         self.x, self.y = self.run(self.x, self.y, self.pos, width, height)
         x += self.x // 60
         y += self.y // 60
