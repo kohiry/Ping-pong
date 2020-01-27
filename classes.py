@@ -97,20 +97,19 @@ class Enemy:
         pygame.draw.rect(self.x, self.y, self.height.self.width)
 
 
-def draw(x, Dheight):  # недоделал
+def draw(x, Dheight):  # отрисовка поля
     jump = 160
     width = 10
     height = 120
     for i in range(0, Dheight, jump): # отрисовка разграничивающих полос на поле
         pygame.draw.rect(screen, (255, 255, 255), (x - width//2, i, width, height))
     # отрисовка счёта
-    font = pygame.font.Font(None, 50)
-    text = font.render("0", 1, (255, 255, 255))
-    text_x = x // 2 - text.get_width() // 2
-    text_y = height // 2 - text.get_height() // 2
-    text_w = text.get_width()
-    text_h = text.get_height()
-    screen.blit(text, (text_x, text_y))
+    font = pygame.font.Font(None, 70)
+    left = font.render("0", 1, (255, 255, 255))
+    right = font.render("0", 1, (255, 255, 255))
+    text_y = 10
+    screen.blit(left, (x // 2 - left.get_width() // 2, text_y))  # 1/4 ширины
+    screen.blit(right, ((x + x // 2) + right.get_width() // 2, text_y))  # 3/4 ширины
 
 
 
