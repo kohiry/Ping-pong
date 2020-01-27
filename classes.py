@@ -97,21 +97,37 @@ class Enemy:
         pygame.draw.rect(self.x, self.y, self.height.self.width)
 
 
-def draw(x, Dheight):  # отрисовка поля
-    jump = 160
-    width = 10
-    height = 120
-    for i in range(0, Dheight, jump): # отрисовка разграничивающих полос на поле
-        pygame.draw.rect(screen, (255, 255, 255), (x - width//2, i, width, height))
-    # отрисовка счёта
-    font = pygame.font.Font(None, 70)
-    left = font.render("0", 1, (255, 255, 255))
-    right = font.render("0", 1, (255, 255, 255))
-    text_y = 10
-    screen.blit(left, (x // 2 - left.get_width() // 2, text_y))  # 1/4 ширины
-    screen.blit(right, ((x + x // 2) + right.get_width() // 2, text_y))  # 3/4 ширины
+class DrawBackground:
+    def __init__(self):
+        self.jump = 160
+        self.width = 10
+        self.height = 120
+        self.text_y = 10
 
+        self.score = {'enemy':'0', 'hero':'0'}
 
+        font = pygame.font.Font(None, 70)
+        White = (255, 255, 255)
+        self.enemy_txt = font.render(self.score['enemy'], 1, (255, 255, 255))
+        self.hero_txt = font.render(self.score['hero'], 1, (255, 255, 255))
+
+    def change_score(self, who, score):
+        if who == 'enemy' or who == 'hero':
+            self.score[who] = score
+        else:
+            print('Неверные даны данные')
+
+    def draw(self, x, Dheight, screen):
+        # отрисовка поля
+        for i in range(0, Dheight, self.jump):  # отрисовка разграничивающих полос на поле
+            pygame.draw.rect(screen, (255, 255, 255), (x - self.width//2, i,\
+                             self.width, self.height))
+
+        # отрисовка счёта
+        screen.blit(self.enemy_txt, (x // 2 - self.enemy_txt.get_width() // 2, self.text_y))  # 1/4 ширины
+        screen.blit(self.hero_txt, ((x + x // 2) - self.hero_txt.get_width() // 2, self.text_y))  # 3/4
+
+background = DrawBackground()
 
 size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
@@ -121,7 +137,7 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-    draw(width//2, height)
+    background.draw(width//2, height, screen)
     pygame.display.flip()
 
 pygame.quit()
