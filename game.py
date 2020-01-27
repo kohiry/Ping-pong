@@ -2,18 +2,26 @@ import pygame
 import classes
 pygame.init()
 
-
 size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
 
 White = (255, 255, 255)
 Black = (0, 0, 0)
-list_balls = []
+
 bol = False
 start = False
 anim_count = 0
 
-sprite_menu = classes.menu_sprite()
+ball = classes.Ball((400, 560), screen)
+background = classes.DrawBackground()
+
+def menu_sprite():  # download sprite: list with sprite menu
+    sprites = []
+    for i in range(1, 12):
+        sprites.append(pygame.image.load(str(f'data/menu_{str(i)}.png')))
+    return sprites
+
+sprite_menu = menu_sprite()
 
 def draw():
     global anim_count
@@ -21,6 +29,7 @@ def draw():
         anim_count = 0
     screen.blit(sprite_menu[anim_count // 5], (0, 0))
     anim_count += 1
+
 
 
 running = True
@@ -33,32 +42,25 @@ while running:
             pass
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_UP]:
         pass
-    elif keys[pygame.K_RIGHT]:
+    elif keys[pygame.K_DOWN]:
         pass
-    elif keys[pygame.K_a]:
+    elif keys[pygame.K_w]:
         pass
-    elif keys[pygame.K_d]:
-        pass
-    elif keys[pygame.K_d]:
+    elif keys[pygame.K_s]:
         pass
     elif keys[pygame.K_SPACE]:
         start = True
 
     if start:  # сменить список, на просто объект
-        list_balls.append(classes.Ball((400, 560), screen))
         bol = True
     else:
-        # draw()
-        pass
+        draw()
     screen.fill(Black)
     if bol:
-
-        for i in list_balls:
-            i.draw(width, height)
-        pygame.display.flip()
-    pygame.display.update()
+        ball.draw(width, height)
+    background.draw(width//2, height, screen)
     pygame.display.flip()
 
 pygame.quit()
