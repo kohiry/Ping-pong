@@ -129,6 +129,22 @@ class DrawBackground:
         screen.blit(self.hero_txt, ((x + x // 2) - self.hero_txt.get_width() // 2, self.text_y))  # 3/4
 
 
+class Sound:  # class for downlod and play sound
+    def __init__(self):
+        self.sound = {'die_sound': pygame.mixer.Sound(r'Sound\die.ogg'),
+                      'jump_sound': pygame.mixer.Sound(r'Sound\jump.ogg'),
+                      'score_sound': pygame.mixer.Sound(r'Sound\score.ogg')}
+
+    def play_die(self):
+        sound['die_sound'].play()
+
+    def play_jump(self):
+        sound['jump_sound'].play()
+
+    def play_score(self):
+        sound['score_sound'].play()
+
+
 '''
 background = DrawBackground()
 
