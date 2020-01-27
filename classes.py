@@ -57,3 +57,65 @@ def menu_sprite():  # download sprite: list with sprite menu
     for i in range(1, 12):
         sprites.append(pygame.image.load(f'data/menu_{str(i)}.png'))
     return sprites
+
+
+class Hero:
+    def __init__(self, x, y, height, width, speed):
+        self.x = x
+        self.y = y
+        self.height = height
+        self.width = width
+        self.speed = speed
+
+    def move(self, flag):  # flag - bool, True = вправо, False = влево
+        if flag:
+            self.x -= self.speed
+        else:
+            self.x += self.speed
+
+    def draw(self):
+        pygame.draw.rect(self.x, self.y, self.height.self.width)
+
+
+class Enemy:
+    def __init__(self, x, y, height, width, speed):
+        self.x = x
+        self.y = y
+        self.height = height
+        self.width = width
+        self.speed = speed
+
+    def AI(self, x):  # x - координата объекта ball
+        if self.x == x:
+            return self.x
+        elif self.x > x:
+            return self.x - self.speed
+        elif self.x < x:
+            return self.x + self.speed
+
+    def draw(self):
+        pygame.draw.rect(self.x, self.y, self.height.self.width)
+
+
+def draw(x, Dheight):  # недоделал
+    jump = 160
+    width = 10
+    height = 120
+    for i in range(0, Dheight, jump): # отрисовка разграничивающих полос на поле
+        pygame.draw.rect(screen, (255, 255, 255), (x - width//2, i, width, height))
+    
+
+
+
+size = width, height = 800, 600
+screen = pygame.display.set_mode(size)
+
+run = True
+while run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    draw(width//2, height)
+    pygame.display.flip()
+
+pygame.quit()
