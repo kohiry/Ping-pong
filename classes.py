@@ -46,7 +46,6 @@ class Ball:
 
     def draw(self, width, height):
         x, y = self.pos
-        print(self.run(self.x, self.y, self.pos, width, height))
         self.x, self.y = self.run(self.x, self.y, self.pos, width, height)
         x += self.x // 60
         y += self.y // 60
