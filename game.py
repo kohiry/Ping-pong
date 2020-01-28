@@ -16,7 +16,8 @@ ismenu = False
 start = False
 game = False
 
-anim_count = 0
+count_tutorial = 0
+count_menu = 0
 
 # данные, нужные для более универсального
 # представления персонажей на разных мониторах
@@ -34,45 +35,57 @@ hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob
 # объекты дисплейные
 background = classes.DrawBackground()
 sprite_tutorial = classes.tutorial_sprite()
-#sprite_menu = classes.menu_sprite()
+sprite_menu = classes.menu_sprite()
 
 # подравнивание меню под экран
 classes.transforms(sprite_tutorial, width, height)
+classes.transforms(sprite_menu, width, height)
 
 def draw_tutorial():  # отрисовка туториала
-    global anim_count
-    if anim_count + 1 >= 56:
-        anim_count = 0
-    screen.blit(sprite_tutorial[anim_count // 5], (0, 0))
-    anim_count += 1
+    global count_tutorial
+    if count_tutorial + 1 >= 60:
+        count_tutorial = 0
+    screen.blit(sprite_tutorial[count_tutorial // 5], (0, 0))
+    count_tutorial += 1
 
 def draw_menu():  # отрисовка меню
-    global anim_count
-    if anim_count + 1 >= 56:
-        anim_count = 0
-    screen.blit(sprite_menu[anim_count // 5], (0, 0))
-    anim_count += 1
+    screen.blit(sprite_menu[count_menu], (0, 0))
 
 
 running = True
 clock = pygame.time.Clock()
+sound = classes.Sound()
 while running:
     pygame.mouse.set_visible(False)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if ismenu:
+                sound.play_jump()
+                clock.tick(60)
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    count_menu -= 1
+                    if count_menu <= 0:
+                        count_menu = 3
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    count_menu += 1
+                    if count_menu >= 4:
+                        count_menu = 1
+
+
         if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
             hero.y = event.pos[1]
             clock.tick(60)
 
     # события клавишей
     keys = pygame.key.get_pressed()
-
-    # управление стрелками или клавиатурой
-    if (keys[pygame.K_UP] or keys[pygame.K_w]) and hero.y >= 0:
-        hero.move(True)
-    if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and hero.y <= height - height_mob:
-        hero.move(False)
+    if game:
+        # управление стрелками или клавиатурой
+        if (keys[pygame.K_UP] or keys[pygame.K_w]) and hero.y >= 0:
+            hero.move(True)
+        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and hero.y <= height - height_mob:
+            hero.move(False)
     # another act
     if keys[pygame.K_SPACE]:
         start = True
@@ -85,7 +98,7 @@ while running:
     else:
         draw_tutorial()
     if ismenu:
-        pass
+        draw_menu()
     if game:
         # движение моба
         if ball.pos[0] <= width // 2:
