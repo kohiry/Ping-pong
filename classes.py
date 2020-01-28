@@ -11,42 +11,50 @@ class Ball:
         self.screen = screen
         self.width = width
         self.clock = pygame.time.Clock()
+        self.rect = pygame.Rect(*coord, width, width)
 
-    def run(self, x, y, coord, width, height):
-      speed = (x, y)
-      speeds_all = [(-400, -400), (400, 400), (400, -400), (-400, 400)]
-      if speed == speeds_all[0]:
-        if coord[0] <= 0:
-          return speeds_all[2]
-        if coord[1] <= 0:
-          return speeds_all[3]
-        else:
-          return speed
-      elif speed == speeds_all[1]:
-        if coord[0] >= width:
-          return speeds_all[3]
-        if coord[1] >= height:
-          return speeds_all[2]
-        else:
-          return speed
-      elif speed == speeds_all[2]:
-        if coord[0] >= width:
-          return speeds_all[0]
-        if coord[1] <= 0:
-          return speeds_all[1]
-        else:
-          return speed
-      elif speed == speeds_all[3]:
-        if coord[0] <= 0:
-          return speeds_all[1]
-        if coord[1] >= height:
-          return speeds_all[0]
-        else:
-          return speed
+    def run(self, x, y, coord, width, height, start):
+        speed = (x, y)
+        speeds_all = [(-400, -400), (400, 400), (400, -400), (-400, 400)]
+        if speed == speeds_all[0]:
+            if coord[0] <= start:
+                return speeds_all[2]
+            if coord[1] <= start:
+                return speeds_all[3]
+            else:
+                return speed
+        elif speed == speeds_all[1]:
+            if coord[0] >= width:
+                return speeds_all[3]
+            if coord[1] >= height:
+                return speeds_all[2]
+            else:
+                return speed
+        elif speed == speeds_all[2]:
+            if coord[0] >= width:
+                return speeds_all[0]
+            if coord[1] <= start:
+                return speeds_all[1]
+            else:
+                return speed
+        elif speed == speeds_all[3]:
+            if coord[0] <= start:
+                return speeds_all[1]
+            if coord[1] >= height:
+                return speeds_all[0]
+            else:
+                return speed
+        # надо разобраться с тем, какой start пренадлежит какой координате width или height
 
-    def draw(self, width, height):
+    def collide(self, rect):
+        if self.rect.colliderect(rect):
+            x, y = self.pos
+            self.x, self.y = self.run(self.x, self.y, self.pos, width, height, rect.x)
+
+
+    def draw(self, width, height, start):
         x, y = self.pos
-        self.x, self.y = self.run(self.x, self.y, self.pos, width, height)
+        self.x, self.y = self.run(self.x, self.y, self.pos, width, height, start)
         x += self.x // 60
         y += self.y // 60
         self.clock.tick(60)
@@ -66,7 +74,7 @@ def menu_sprite():  # download sprite: list with sprite menu
 
 
 class Hero:
-    def __init__(self, x, y, height, width, speed):
+    def __init__(self, x, y, width, height, speed):
         self.x = x
         self.y = y
         self.height = height
@@ -74,6 +82,7 @@ class Hero:
         self.speed = speed
         self.color = (255, 255, 255)
         self.clock = pygame.time.Clock()
+        self.rect = pygame.Rect(x, y, width, height)
 
     def move(self, flag):  # flag - bool, True = вправо, False = влево
         if flag:
@@ -83,7 +92,7 @@ class Hero:
         self.clock.tick(60)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.height, self.width))
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
 
 
 class Enemy:
@@ -95,6 +104,7 @@ class Enemy:
         self.speed = speed
         self.color = (255, 255, 255)
         self.clock = pygame.time.Clock()
+        self.rect = pygame.Rect(x, y, width, height)
 
     def AI(self, y, display_height):  # y - координата объекта ball
 

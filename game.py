@@ -76,6 +76,8 @@ while running:
         ball.draw(width, height)
         enemy.draw(screen)
         hero.draw(screen)
+        ball.collide(enemy.rect)
+        ball.collide(hero.rect)
 
         background.draw(width // 2, height, screen)
 
