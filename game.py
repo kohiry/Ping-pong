@@ -15,6 +15,7 @@ Black = (0, 0, 0)
 ismenu = False
 start = False
 game = False
+game_2 = False
 
 count_tutorial = 0
 count_menu = 0
@@ -61,6 +62,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
+            if not start:
+                if event.key == pygame.K_SPACE:
+                    start = True
             if ismenu:
                 sound.play_jump()
                 clock.tick(60)
@@ -72,7 +76,19 @@ while running:
                     count_menu += 1
                     if count_menu >= 4:
                         count_menu = 1
-
+                if event.key == pygame.K_SPACE:
+                    if count_menu == 1:
+                        ismenu = True
+                        start = False
+                        game = True
+                        game_2 = False
+                    if count_menu == 2:
+                        ismenu = True
+                        start = False
+                        game = True
+                        game_2 = True
+                    if count_menu == 3:
+                        running = False
 
         if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
             hero.y = event.pos[1]
@@ -86,20 +102,20 @@ while running:
             hero.move(True)
         if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and hero.y <= height - height_mob:
             hero.move(False)
-    # another act
-    if keys[pygame.K_SPACE]:
-        start = True
+
     if keys[pygame.K_ESCAPE]:
         running = False
 
     screen.fill(Black)
     if start:
-        ismenu = True
-    else:
+        if not game and not game_2:
+            ismenu = True
+    elif not start and not game and not game_2:
         draw_tutorial()
-    if ismenu:
+    if ismenu and not game:
         draw_menu()
     if game:
+        print(ismenu)
         # движение моба
         if ball.pos[0] <= width // 2:
             enemy.AI(ball.pos[1], height)
