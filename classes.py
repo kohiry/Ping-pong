@@ -55,7 +55,7 @@ class Ball:
         pygame.draw.circle(self.screen, (255, 255, 255), self.pos, self.width)
 
 
-def transforms(sprite):
+def transforms(sprite, width, height):
     for i in range(len(sprite)):
         sprite[i] = pygame.transform.scale(sprite[i], (width, height))
 
