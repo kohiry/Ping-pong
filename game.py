@@ -85,7 +85,7 @@ while running:
                     if count_menu == 2:
                         ismenu = True
                         start = False
-                        game = True
+                        game = False
                         game_2 = True
                     if count_menu == 3:
                         running = False
@@ -128,6 +128,8 @@ while running:
         hero.draw(screen)
         ball.collide(enemy.rects(), width, height, False)
         ball.collide(hero.rects(), width, height, True)
+    if game_2:
+        pass
 
 
 
