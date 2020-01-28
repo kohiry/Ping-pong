@@ -72,15 +72,16 @@ class Hero:
         self.height = height
         self.width = width
         self.speed = speed
+        self.color = (255, 255, 255)
 
     def move(self, flag):  # flag - bool, True = вправо, False = влево
         if flag:
-            self.x -= self.speed
+            self.y -= self.speed
         else:
-            self.x += self.speed
+            self.y += self.speed
 
-    def draw(self):
-        pygame.draw.rect(self.x, self.y, self.height, self.width)
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.height, self.width))
 
 
 class Enemy:
@@ -90,17 +91,18 @@ class Enemy:
         self.height = height
         self.width = width
         self.speed = speed
+        self.color = (255, 255, 255)
 
-    def AI(self, x):  # x - координата объекта ball
-        if self.x == x:
-            return self.x
-        elif self.x > x:
-            return self.x - self.speed
-        elif self.x < x:
-            return self.x + self.speed
+    def AI(self, y):  # x - координата объекта ball
+        if self.y == y:
+            return self.y
+        elif self.y > y:
+            return self.y - self.speed
+        elif self.y < y:
+            return self.y + self.speed
 
-    def draw(self):
-        pygame.draw.rect(self.x, self.y, self.height, self.width)
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.height, self.width))
 
 
 class DrawBackground:
