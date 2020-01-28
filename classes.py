@@ -16,7 +16,6 @@ class Ball:
         self.sound = Sound()
         self.start = True
         self.score = Score()
-        self.restart = RestartBar()
 
     def run(self, x, y, coord, width, height, start, flag):
         speed = (x, y)
@@ -88,7 +87,6 @@ class Ball:
         # проверки, если кто-то получил 10 очков, всё обнуляется
         if self.score.score_enemy == 10 or self.score.score_hero == 10:
             self.score.score_clear()
-            self.restart.draw()
 
     def get_score(self):
         return self.score.get_score()

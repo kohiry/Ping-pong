@@ -32,6 +32,7 @@ speed_mob = 360
 ball = classes.Ball((400, 560), screen, 35)
 enemy = classes.Enemy(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
 hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob)
+hero_2 = classes.Hero(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
 
 # объекты дисплейные
 background = classes.DrawBackground()
@@ -62,10 +63,16 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F1:
+                ismenu = True
+                game = False
+                game_2 = False
+                ball.score.score_clear()
+                ball.pos = width // 2, height // 2
             if not start:
                 if event.key == pygame.K_SPACE:
                     start = True
-            if ismenu:
+            if ismenu and not game and not game_2:
                 sound.play_jump()
                 clock.tick(60)
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
@@ -90,6 +97,7 @@ while running:
                     if count_menu == 3:
                         running = False
 
+
         if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
             hero.y = event.pos[1]
             clock.tick(60)
@@ -102,6 +110,16 @@ while running:
             hero.move(True)
         if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and hero.y <= height - height_mob:
             hero.move(False)
+    if game_2:
+        # управление стрелками или клавиатурой
+        if keys[pygame.K_UP] and hero.y >= 0:
+            hero.move(True)
+        if keys[pygame.K_DOWN] and hero.y <= height - height_mob:
+            hero.move(False)
+        if keys[pygame.K_w] and hero_2.y >= 0:
+            hero_2.move(True)
+        if keys[pygame.K_s] and hero_2.y <= height - height_mob:
+            hero_2.move(False)
 
     if keys[pygame.K_ESCAPE]:
         running = False
@@ -112,10 +130,9 @@ while running:
             ismenu = True
     elif not start and not game and not game_2:
         draw_tutorial()
-    if ismenu and not game:
+    if ismenu and not game and not game_2:
         draw_menu()
     if game:
-        print(ismenu)
         # движение моба
         if ball.pos[0] <= width // 2:
             enemy.AI(ball.pos[1], height)
@@ -128,13 +145,19 @@ while running:
         hero.draw(screen)
         ball.collide(enemy.rects(), width, height, False)
         ball.collide(hero.rects(), width, height, True)
+
     if game_2:
-        pass
-
-
+        background.draw(width // 2, height, screen)
+        background.change_score('enemy', ball.get_score()[1])
+        background.change_score('hero', ball.get_score()[0])
+        ball.draw(width, height)
+        hero_2.draw(screen)
+        hero.draw(screen)
+        ball.collide(hero_2.rects(), width, height, False)
+        ball.collide(hero.rects(), width, height, True)
 
     pygame.display.flip()
 
 pygame.quit()
 
-# добавить отрисовку и движение врага и героя
+# иногда реально ненавижу git hub
