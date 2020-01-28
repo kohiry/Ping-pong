@@ -1,5 +1,4 @@
 import pygame
-import sqlite3
 pygame.init()
 
 size = width, height = 800, 600
