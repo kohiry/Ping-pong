@@ -14,6 +14,8 @@ Black = (0, 0, 0)
 
 ismenu = False
 start = False
+game = False
+
 anim_count = 0
 
 # данные, нужные для более универсального
@@ -31,12 +33,20 @@ hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob
 
 # объекты дисплейные
 background = classes.DrawBackground()
-sprite_menu = classes.menu_sprite()
+sprite_tutorial = classes.tutorial_sprite()
+#sprite_menu = classes.menu_sprite()
 
 # подравнивание меню под экран
-classes.transforms(sprite_menu, width, height)
+classes.transforms(sprite_tutorial, width, height)
 
-def draw():
+def draw_tutorial():  # отрисовка туториала
+    global anim_count
+    if anim_count + 1 >= 56:
+        anim_count = 0
+    screen.blit(sprite_tutorial[anim_count // 5], (0, 0))
+    anim_count += 1
+
+def draw_menu():  # отрисовка меню
     global anim_count
     if anim_count + 1 >= 56:
         anim_count = 0
@@ -73,8 +83,10 @@ while running:
     if start:
         ismenu = True
     else:
-        draw()
+        draw_tutorial()
     if ismenu:
+        pass
+    if game:
         # движение моба
         if ball.pos[0] <= width // 2:
             enemy.AI(ball.pos[1], height)
