@@ -78,10 +78,10 @@ class Ball:
 
     def who_start(self, width, height, side):
         if side:
-            self.score.update_hero()
+            self.score.update_enemy()
             self.x, self.y = -self.speed, -self.speed
         else:
-            self.score.update_enemy()
+            self.score.update_hero()
             self.x, self.y = self.speed, self.speed
         self.pos = width // 2, height // 2
         # проверки, если кто-то получил 10 очков, всё обнуляется

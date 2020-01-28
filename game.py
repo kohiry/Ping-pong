@@ -6,7 +6,7 @@ from screeninfo import get_monitors
 
 size = width, height = get_monitors()[0].width, get_monitors()[0].height
 # screen = pygame.display.set_mode(size)
-screen = pygame.display.set_mode((0, 0),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
+screen = pygame.display.set_mode((0, 0), pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
 pygame.display.set_caption('Classic game')
 
 White = (255, 255, 255)
@@ -47,7 +47,7 @@ def draw():
 running = True
 clock = pygame.time.Clock()
 while running:
-    pygame.mouse.set_visible
+    pygame.mouse.set_visible(False)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
