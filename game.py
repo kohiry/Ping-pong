@@ -80,7 +80,6 @@ while running:
             enemy.AI(ball.pos[1], height)
         # отрисовки
         background.draw(width // 2, height, screen)
-        print(ball.get_score())
         background.change_score('enemy', ball.get_score()[1])
         background.change_score('hero', ball.get_score()[0])
         ball.draw(width, height)

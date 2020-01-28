@@ -23,17 +23,22 @@ class Ball:
         speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
                       (self.speed, -self.speed), (-self.speed, self.speed)]
 
-        def help(speed):
+
+        def help(speed, side):
             if flag:
                 self.sound.play_jump()
                 return speed
             else:
                 self.sound.play_die()
-                return 1, 1
+                if side == 'right':
+                    return 1, 1
+                elif side == 'left':
+                    return 2, 2
+
 
         if speed == speeds_all[0]:
             if coord[0] <= start:
-                return help(speeds_all[2])
+                return help(speeds_all[2], 'left')
 
             if coord[1] <= 0:
                 self.sound.play_jump()
@@ -43,7 +48,7 @@ class Ball:
 
         elif speed == speeds_all[1]:
             if coord[0] >= width:
-                return help(speeds_all[3])
+                return help(speeds_all[3], 'right')
 
             if coord[1] >= height:
                 self.sound.play_jump()
@@ -53,7 +58,7 @@ class Ball:
 
         elif speed == speeds_all[2]:
             if coord[0] >= width:
-                return help(speeds_all[0])
+                return help(speeds_all[0], 'right')
 
             if coord[1] <= 0:
                 self.sound.play_jump()
@@ -63,7 +68,7 @@ class Ball:
 
         elif speed == speeds_all[3]:
             if coord[0] <= start:
-                return help(speeds_all[1])
+                return help(speeds_all[1], 'left')
 
             if coord[1] >= height:
                 # звук отпрыгивания
@@ -72,19 +77,16 @@ class Ball:
                 return speed
         # надо разобраться с тем, какой start пренадлежит какой координате width или height
 
-    def who_start(self, width, height):
-        if self.start:
+    def who_start(self, width, height, side):
+        if side:
             self.score.update_hero()
-            self.start = False
             self.x, self.y = -self.speed, -self.speed
         else:
-            self.start = True
             self.score.update_enemy()
             self.x, self.y = self.speed, self.speed
         self.pos = width // 2, height // 2
-        # проверки, если кто-то получил 10 очков, все заливается в БД и обнуляется
+        # проверки, если кто-то получил 10 очков, всё обнуляется
         if self.score.score_enemy == 10 or self.score.score_hero == 10:
-            self.score.score_add()
             self.score.score_clear()
 
     def get_score(self):
@@ -103,7 +105,9 @@ class Ball:
         else:
             self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
         if self.x == 1:
-            self.who_start(width, height)
+            self.who_start(width, height, True)
+        elif self.x == 2:
+            self.who_start(width, height, False)
 
     def draw(self, width, height):
         x, y = self.pos
