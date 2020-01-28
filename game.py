@@ -77,7 +77,7 @@ while running:
         enemy.draw(screen)
         hero.draw(screen)
 
-        background.draw(width//2, height, screen)
+        background.draw(width // 2, height, screen)
 
     pygame.display.flip()
 

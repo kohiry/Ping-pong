@@ -82,7 +82,6 @@ class Hero:
             self.y += self.speed // 60
         self.clock.tick(60)
 
-
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.height, self.width))
 
