@@ -38,7 +38,7 @@ classes.transforms(sprite_menu, width, height)
 
 def draw():
     global anim_count
-    if anim_count + 1 >= 20:
+    if anim_count + 1 >= 56:
         anim_count = 0
     screen.blit(sprite_menu[anim_count // 5], (0, 0))
     anim_count += 1

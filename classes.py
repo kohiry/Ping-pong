@@ -124,7 +124,7 @@ def transforms(sprite, width, height):
 def menu_sprite():  # download sprite: list with sprite menu
     sprites = []
     for i in range(1, 12):
-        sprites.append(pygame.image.load(f'data/menu_{str(i)}.png').convert())
+        sprites.append(pygame.image.load(f'data/menu_{str(i)}.png'))
     return sprites
 
 
