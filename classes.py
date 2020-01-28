@@ -73,12 +73,15 @@ class Hero:
         self.width = width
         self.speed = speed
         self.color = (255, 255, 255)
+        self.clock = pygame.time.Clock()
 
     def move(self, flag):  # flag - bool, True = вправо, False = влево
         if flag:
-            self.y -= self.speed
+            self.y -= self.speed // 60
         else:
-            self.y += self.speed
+            self.y += self.speed // 60
+        self.clock.tick(60)
+
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.height, self.width))
