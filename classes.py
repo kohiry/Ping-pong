@@ -123,7 +123,7 @@ def transforms(sprite, width, height):
 
 def tutorial_sprite():  # download sprite: list with sprite tutorial
     sprites = []
-    for i in range(1, 13):
+    for i in range(1, 16):
         sprites.append(pygame.image.load(f'data/tutorial_{str(i)}.png'))
     return sprites
 

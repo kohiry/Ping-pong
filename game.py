@@ -45,7 +45,7 @@ classes.transforms(sprite_menu, width, height)
 
 def draw_tutorial():  # отрисовка туториала
     global count_tutorial
-    if count_tutorial + 1 >= 60:
+    if count_tutorial + 1 >= 75:
         count_tutorial = 0
     screen.blit(sprite_tutorial[count_tutorial // 5], (0, 0))
     count_tutorial += 1
@@ -63,6 +63,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F1:
+                ismenu = True
+                game = False
+                game_2 = False
+                ball.score.score_clear()
+                ball.pos = width // 2, height // 2
             if not start:
                 if event.key == pygame.K_SPACE:
                     start = True
@@ -90,6 +96,7 @@ while running:
                         game_2 = True
                     if count_menu == 3:
                         running = False
+
 
         if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
             hero.y = event.pos[1]
