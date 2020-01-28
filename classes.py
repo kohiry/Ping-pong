@@ -1,4 +1,5 @@
 import pygame
+import sqlite3
 pygame.init()
 
 size = width, height = 800, 600
@@ -99,7 +100,6 @@ class Ball:
         self.clock.tick(60)
         self.pos = (int(x), int(y))
         pygame.draw.rect(self.screen, (255, 255, 255), (*self.pos, self.width, self.width))
-
 
 
 def transforms(sprite, width, height):
@@ -210,6 +210,35 @@ class Sound:  # class for downlod and play sound
     def play_score(self):
         self.sound['score_sound'].play()
 
+
+class Score:
+    def __init__(self):
+        self.score_enemy = 0
+        self.score_hero = 0
+        con = sqlite3.connect("score.db")
+        self.cur = con.cursor()
+
+    def update_hero(self):
+        self.score_hero += 1
+
+    def update_enemy(self):
+        self.score_enemy += 1
+
+    def score_add(self):
+        # Выполнение запроса и получение всех результатов
+        result = self.cur.execute(f"""INSERT INTO scores(enemy) VALUES({self.score_enemy})""")
+        result = self.cur.execute(f"""INSERT INTO scores(hero) VALUES({self.score_hero})""")
+        con.close()
+
+    def get_score(self):
+        # Выполнение запроса и получение всех результатов
+        result = self.cur.execute("""SELECT * FROM scores""").fetchall()
+
+        # Вывод результатов на экран
+        for elem in result:
+            print(elem)
+
+        con.close()
 
 '''
 background = DrawBackground()
