@@ -16,6 +16,7 @@ class Ball:
         self.sound = Sound()
         self.start = True
         self.score = Score()
+        self.restart = RestartBar()
 
     def run(self, x, y, coord, width, height, start, flag):
         speed = (x, y)
@@ -133,6 +134,19 @@ def menu_sprite(): # download sprite: list with sprite menu
         sprites.append(pygame.image.load(f'data/menu_{str(i)}.png'))
     return sprites
 
+class RestartBar:
+    def __init__(self):
+        self.sprites = []
+        for i in range(1, 3):
+            self.sprites.append(pygame.image.load(f'data/restart_bar_{str(i)}.png'))
+        self.count = 0
+
+    def transforms(self, width, height):
+        for i in range(len(sprite)):
+            self.sprite[i] = pygame.transform.scale(sprite[i], (width, height))
+
+    def draw(self, screen, width, height):
+        screen.blit(self.sprite[self.count], (width // 2 - width // 4, height // 2 - height // 4))
 
 class Hero:
     def __init__(self, x, y, width, height, speed):
