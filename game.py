@@ -79,13 +79,16 @@ while running:
         if ball.pos[0] <= width // 2:
             enemy.AI(ball.pos[1], height)
         # отрисовки
+        background.draw(width // 2, height, screen)
+        background.change_score('enemy', ball.get_score()[1])
+        background.change_score('hero', ball.get_score()[0])
         ball.draw(width, height)
         enemy.draw(screen)
         hero.draw(screen)
         ball.collide(enemy.rects(), width, height, False)
         ball.collide(hero.rects(), width, height, True)
 
-        background.draw(width // 2, height, screen)
+
 
     pygame.display.flip()
 

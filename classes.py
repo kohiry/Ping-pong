@@ -1,4 +1,5 @@
 import pygame
+import sqlite3
 pygame.init()
 
 size = width, height = 800, 600
@@ -7,29 +8,37 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width):
         self.pos = coord
-        self.x, self.y = 400, 400
+        self.speed = 700
+        self.x, self.y = self.speed, self.speed
         self.screen = screen
         self.width = width
         self.clock = pygame.time.Clock()
         self.rect = pygame.Rect(*coord, width, width)
         self.sound = Sound()
         self.start = True
+        self.score = Score()
 
     def run(self, x, y, coord, width, height, start, flag):
         speed = (x, y)
-        speeds_all = [(-400, -400), (400, 400), (400, -400), (-400, 400)]
+        speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
+                      (self.speed, -self.speed), (-self.speed, self.speed)]
 
-        def help(speed):
+
+        def help(speed, side):
             if flag:
                 self.sound.play_jump()
                 return speed
             else:
                 self.sound.play_die()
-                return 1, 1
+                if side == 'right':
+                    return 1, 1
+                elif side == 'left':
+                    return 2, 2
+
 
         if speed == speeds_all[0]:
             if coord[0] <= start:
-                return help(speeds_all[2])
+                return help(speeds_all[2], 'left')
 
             if coord[1] <= 0:
                 self.sound.play_jump()
@@ -39,7 +48,7 @@ class Ball:
 
         elif speed == speeds_all[1]:
             if coord[0] >= width:
-                return help(speeds_all[3])
+                return help(speeds_all[3], 'right')
 
             if coord[1] >= height:
                 self.sound.play_jump()
@@ -49,7 +58,7 @@ class Ball:
 
         elif speed == speeds_all[2]:
             if coord[0] >= width:
-                return help(speeds_all[0])
+                return help(speeds_all[0], 'right')
 
             if coord[1] <= 0:
                 self.sound.play_jump()
@@ -59,7 +68,7 @@ class Ball:
 
         elif speed == speeds_all[3]:
             if coord[0] <= start:
-                return help(speeds_all[1])
+                return help(speeds_all[1], 'left')
 
             if coord[1] >= height:
                 # звук отпрыгивания
@@ -68,14 +77,20 @@ class Ball:
                 return speed
         # надо разобраться с тем, какой start пренадлежит какой координате width или height
 
-    def who_start(self, width, height):
-        if self.start:
-            self.start = False
-            self.x, self.y = -400, -400
+    def who_start(self, width, height, side):
+        if side:
+            self.score.update_hero()
+            self.x, self.y = -self.speed, -self.speed
         else:
-            self.start = True
-            self.x, self.y = 400, 400
+            self.score.update_enemy()
+            self.x, self.y = self.speed, self.speed
         self.pos = width // 2, height // 2
+        # проверки, если кто-то получил 10 очков, всё обнуляется
+        if self.score.score_enemy == 10 or self.score.score_hero == 10:
+            self.score.score_clear()
+
+    def get_score(self):
+        return self.score.get_score()
 
     def rects(self):
         return pygame.Rect(*self.pos, self.width, self.width)
@@ -90,7 +105,9 @@ class Ball:
         else:
             self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
         if self.x == 1:
-            self.who_start(width, height)
+            self.who_start(width, height, True)
+        elif self.x == 2:
+            self.who_start(width, height, False)
 
     def draw(self, width, height):
         x, y = self.pos
@@ -99,7 +116,6 @@ class Ball:
         self.clock.tick(60)
         self.pos = (int(x), int(y))
         pygame.draw.rect(self.screen, (255, 255, 255), (*self.pos, self.width, self.width))
-
 
 
 def transforms(sprite, width, height):
@@ -166,33 +182,33 @@ class Enemy:
 
 class DrawBackground:
     def __init__(self):
-        self.jump = 160
-        self.width = 10
-        self.height = 120
+        self.jump = 120
+        self.width = 5
+        self.height = 100
         self.text_y = 10
-
         self.score = {'enemy':'0', 'hero':'0'}
 
-        font = pygame.font.Font(None, 70)
-        White = (255, 255, 255)
-        self.enemy_txt = font.render(self.score['enemy'], 1, (255, 255, 255))
-        self.hero_txt = font.render(self.score['hero'], 1, (255, 255, 255))
+
 
     def change_score(self, who, score):
         if who == 'enemy' or who == 'hero':
-            self.score[who] = score
+            self.score[who] = str(score)
         else:
             print('Неверные даны данные')
 
     def draw(self, x, Dheight, screen):
+        font = pygame.font.Font(None, 70)
+        White = (255, 255, 255)
+        enemy_txt = font.render(self.score['enemy'], 1, (255, 255, 255))
+        hero_txt = font.render(self.score['hero'], 1, (255, 255, 255))
         # отрисовка поля
         for i in range(0, Dheight, self.jump):  # отрисовка разграничивающих полос на поле
             pygame.draw.rect(screen, (255, 255, 255), (x - self.width//2, i,\
                              self.width, self.height))
 
         # отрисовка счёта
-        screen.blit(self.enemy_txt, (x // 2 - self.enemy_txt.get_width() // 2, self.text_y))  # 1/4 ширины
-        screen.blit(self.hero_txt, ((x + x // 2) - self.hero_txt.get_width() // 2, self.text_y))  # 3/4
+        screen.blit(enemy_txt, (x // 2 - enemy_txt.get_width() // 2, self.text_y))  # 1/4 ширины
+        screen.blit(hero_txt, ((x + x // 2) - hero_txt.get_width() // 2, self.text_y))  # 3/4
 
 
 class Sound:  # class for downlod and play sound
@@ -209,6 +225,25 @@ class Sound:  # class for downlod and play sound
 
     def play_score(self):
         self.sound['score_sound'].play()
+
+
+class Score:
+    def __init__(self):
+        self.score_enemy = 0
+        self.score_hero = 0
+
+    def update_hero(self):
+        self.score_hero += 1
+
+    def update_enemy(self):
+        self.score_enemy += 1
+
+    def score_clear(self):
+        self.score_hero = 0
+        self.score_enemy = 0
+
+    def get_score(self):
+        return (self.score_hero, self.score_enemy)
 
 
 '''
