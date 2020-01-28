@@ -55,6 +55,10 @@ class Ball:
         pygame.draw.circle(self.screen, (255, 255, 255), self.pos, self.width)
 
 
+def transforms(sprite):
+    for i in range(len(sprite)):
+        sprite[i] = pygame.transform.scale(sprite[i], (width, height))
+
 def menu_sprite():  # download sprite: list with sprite menu
     sprites = []
     for i in range(1, 12):
