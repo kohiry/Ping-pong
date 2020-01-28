@@ -7,40 +7,60 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width):
         self.pos = coord
-        self.x, self.y = -400, -400
+        self.x, self.y = 400, 400
         self.screen = screen
         self.width = width
         self.clock = pygame.time.Clock()
         self.rect = pygame.Rect(*coord, width, width)
+        self.sound = Sound()
 
-    def run(self, x, y, coord, width, height, start):
+    def run(self, x, y, coord, width, height, start, flag):
         speed = (x, y)
         speeds_all = [(-400, -400), (400, 400), (400, -400), (-400, 400)]
+
+        def help(speed):
+            if flag:
+                self.sound.play_jump()
+                return speed
+            else:
+                self.sound.play_die()
+
         if speed == speeds_all[0]:
             if coord[0] <= start:
-                return speeds_all[2]
+                help(speeds_all[2])
+
             if coord[1] <= 0:
+                self.sound.play_jump()
                 return speeds_all[3]
             else:
                 return speed
+
         elif speed == speeds_all[1]:
             if coord[0] >= width:
-                return speeds_all[3]
+                help(speeds_all[3])
+
             if coord[1] >= height:
+                self.sound.play_jump()
                 return speeds_all[2]
             else:
                 return speed
+
         elif speed == speeds_all[2]:
             if coord[0] >= width:
-                return speeds_all[0]
+                help(speeds_all[0])
+
             if coord[1] <= 0:
+                self.sound.play_jump()
                 return speeds_all[1]
             else:
                 return speed
+
         elif speed == speeds_all[3]:
             if coord[0] <= start:
-                return speeds_all[1]
+                help(speeds_all[1])
+
             if coord[1] >= height:
+                # звук отпрыгивания
                 return speeds_all[0]
             else:
                 return speed
@@ -52,12 +72,12 @@ class Ball:
     def collide(self, rect, width, height, flag):
         if self.rects().colliderect(rect):
             if flag:
-                self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0)
+                self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
             else:
-                self.x, self.y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width)
+                self.x, self.y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
 
         else:
-            self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, -200)
+            self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
 
     def draw(self, width, height):
         x, y = self.pos
@@ -65,6 +85,7 @@ class Ball:
         y += self.y // 60
         self.clock.tick(60)
         self.pos = (int(x), int(y))
+        print(self.pos)
         pygame.draw.rect(self.screen, (255, 255, 255), (*self.pos, self.width, self.width))
 
 
@@ -169,13 +190,13 @@ class Sound:  # class for downlod and play sound
                       'score_sound': pygame.mixer.Sound(r'Sound\score.ogg')}
 
     def play_die(self):
-        sound['die_sound'].play()
+        self.sound['die_sound'].play()
 
     def play_jump(self):
-        sound['jump_sound'].play()
+        self.sound['jump_sound'].play()
 
     def play_score(self):
-        sound['score_sound'].play()
+        self.sound['score_sound'].play()
 
 
 '''
