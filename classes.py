@@ -7,40 +7,40 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width):
         self.pos = coord
-        self.x, self.y = -200, -200
+        self.x, self.y = -400, -400
         self.screen = screen
         self.width = width
         self.clock = pygame.time.Clock()
 
     def run(self, x, y, coord, width, height):
       speed = (x, y)
-      speeds_all = [(-200, -200), (200, 200), (200, -200), (-200, 200)]
+      speeds_all = [(-400, -400), (400, 400), (400, -400), (-400, 400)]
       if speed == speeds_all[0]:
         if coord[0] <= 0:
-          return (200, -200)
+          return speeds_all[2]
         if coord[1] <= 0:
-          return (-200, 200)
+          return speeds_all[3]
         else:
           return speed
       elif speed == speeds_all[1]:
         if coord[0] >= width:
-          return (-200, 200)
+          return speeds_all[3]
         if coord[1] >= height:
-          return (200, -200)
+          return speeds_all[2]
         else:
           return speed
       elif speed == speeds_all[2]:
         if coord[0] >= width:
-          return (-200, -200)
+          return speeds_all[0]
         if coord[1] <= 0:
-          return (200, 200)
+          return speeds_all[1]
         else:
           return speed
       elif speed == speeds_all[3]:
         if coord[0] <= 0:
-          return (200, 200)
+          return speeds_all[1]
         if coord[1] >= height:
-          return (-200, -200)
+          return speeds_all[0]
         else:
           return speed
 
@@ -85,24 +85,25 @@ class Hero:
 
 
 class Enemy:
-    def __init__(self, x, y, height, width, speed):
+    def __init__(self, x, y, width, height, speed):
         self.x = x
         self.y = y
         self.height = height
         self.width = width
         self.speed = speed
         self.color = (255, 255, 255)
+        self.clock = pygame.time.Clock()
 
-    def AI(self, y):  # x - координата объекта ball
-        if self.y == y:
-            return self.y
-        elif self.y > y:
-            return self.y - self.speed
-        elif self.y < y:
-            return self.y + self.speed
+    def AI(self, y, display_height):  # y - координата объекта ball
+
+        if self.y + (self.height // 2) > y and self.y >= 0:
+            self.y -= self.speed // 60
+        elif self.y + (self.height // 2) < y and self.y <= display_height - self.height:
+            self.y += self.speed // 60
+        self.clock.tick(60)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.height, self.width))
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
 
 
 class DrawBackground:
