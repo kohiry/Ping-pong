@@ -12,14 +12,28 @@ pygame.display.set_caption('Classic game')
 White = (255, 255, 255)
 Black = (0, 0, 0)
 
-bol = False
+ismenu = False
 start = False
 anim_count = 0
 
-ball = classes.Ball((400, 560), screen, 25)
+# данные, нужные для более универсального
+# представления персонажей на разных мониторах
+width_mob = x_mobs = width // 50
+y_mobs = height // 2
+height_mob = height // 7
 
+speed_mob = 360
+
+# объекты движующиеся
+ball = classes.Ball((400, 560), screen, 25)
+enemy = classes.Enemy(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
+hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob)
+
+# объекты дисплейные
 background = classes.DrawBackground()
 sprite_menu = classes.menu_sprite()
+
+# подравнивание меню под экран
 classes.transforms(sprite_menu, width, height)
 
 def draw():
@@ -38,28 +52,33 @@ while running:
             running = False
     # события клавишей
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        pass
-    if keys[pygame.K_DOWN]:
-        pass
-    if keys[pygame.K_w]:
-        pass
-    if keys[pygame.K_s]:
-        pass
+
+    # управление стрелками или клавиатурой
+    if (keys[pygame.K_UP] or keys[pygame.K_w]) and hero.y >= 0:
+        hero.move(True)
+    if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and hero.y <= height - height_mob:
+        hero.move(False)
+    # another act
     if keys[pygame.K_SPACE]:
         start = True
     if keys[pygame.K_ESCAPE]:
         running = False
 
     screen.fill(Black)
-
     if start:
-        bol = True
+        ismenu = True
     else:
         draw()
-    if bol:
+    if ismenu:
+        # движение моба
+        enemy.AI(ball.pos[1], height)
+        # отрисовки
         ball.draw(width, height)
+        enemy.draw(screen)
+        hero.draw(screen)
+
         background.draw(width//2, height, screen)
+
     pygame.display.flip()
 
 pygame.quit()
