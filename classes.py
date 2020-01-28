@@ -8,17 +8,20 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width):
         self.pos = coord
-        self.x, self.y = 400, 400
+        self.speed = 700
+        self.x, self.y = self.speed, self.speed
         self.screen = screen
         self.width = width
         self.clock = pygame.time.Clock()
         self.rect = pygame.Rect(*coord, width, width)
         self.sound = Sound()
         self.start = True
+        self.score = Score()
 
     def run(self, x, y, coord, width, height, start, flag):
         speed = (x, y)
-        speeds_all = [(-400, -400), (400, 400), (400, -400), (-400, 400)]
+        speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
+                      (self.speed, -self.speed), (-self.speed, self.speed)]
 
         def help(speed):
             if flag:
@@ -71,12 +74,21 @@ class Ball:
 
     def who_start(self, width, height):
         if self.start:
+            self.score.update_hero()
             self.start = False
-            self.x, self.y = -400, -400
+            self.x, self.y = -self.speed, -self.speed
         else:
             self.start = True
-            self.x, self.y = 400, 400
+            self.score.update_enemy()
+            self.x, self.y = self.speed, self.speed
         self.pos = width // 2, height // 2
+        # проверки, если кто-то получил 10 очков, все заливается в БД и обнуляется
+        if self.score.score_enemy == 10 or self.score.score_hero == 10:
+            self.score.score_add()
+            self.score.score_clear()
+
+    def get_score(self):
+        return self.score.get_score()
 
     def rects(self):
         return pygame.Rect(*self.pos, self.width, self.width)
@@ -166,33 +178,33 @@ class Enemy:
 
 class DrawBackground:
     def __init__(self):
-        self.jump = 160
-        self.width = 10
-        self.height = 120
+        self.jump = 120
+        self.width = 5
+        self.height = 100
         self.text_y = 10
-
         self.score = {'enemy':'0', 'hero':'0'}
 
-        font = pygame.font.Font(None, 70)
-        White = (255, 255, 255)
-        self.enemy_txt = font.render(self.score['enemy'], 1, (255, 255, 255))
-        self.hero_txt = font.render(self.score['hero'], 1, (255, 255, 255))
+
 
     def change_score(self, who, score):
         if who == 'enemy' or who == 'hero':
-            self.score[who] = score
+            self.score[who] = str(score)
         else:
             print('Неверные даны данные')
 
     def draw(self, x, Dheight, screen):
+        font = pygame.font.Font(None, 70)
+        White = (255, 255, 255)
+        enemy_txt = font.render(self.score['enemy'], 1, (255, 255, 255))
+        hero_txt = font.render(self.score['hero'], 1, (255, 255, 255))
         # отрисовка поля
         for i in range(0, Dheight, self.jump):  # отрисовка разграничивающих полос на поле
             pygame.draw.rect(screen, (255, 255, 255), (x - self.width//2, i,\
                              self.width, self.height))
 
         # отрисовка счёта
-        screen.blit(self.enemy_txt, (x // 2 - self.enemy_txt.get_width() // 2, self.text_y))  # 1/4 ширины
-        screen.blit(self.hero_txt, ((x + x // 2) - self.hero_txt.get_width() // 2, self.text_y))  # 3/4
+        screen.blit(enemy_txt, (x // 2 - enemy_txt.get_width() // 2, self.text_y))  # 1/4 ширины
+        screen.blit(hero_txt, ((x + x // 2) - hero_txt.get_width() // 2, self.text_y))  # 3/4
 
 
 class Sound:  # class for downlod and play sound
@@ -215,8 +227,6 @@ class Score:
     def __init__(self):
         self.score_enemy = 0
         self.score_hero = 0
-        con = sqlite3.connect("score.db")
-        self.cur = con.cursor()
 
     def update_hero(self):
         self.score_hero += 1
@@ -224,21 +234,13 @@ class Score:
     def update_enemy(self):
         self.score_enemy += 1
 
-    def score_add(self):
-        # Выполнение запроса и получение всех результатов
-        result = self.cur.execute(f"""INSERT INTO scores(enemy) VALUES({self.score_enemy})""")
-        result = self.cur.execute(f"""INSERT INTO scores(hero) VALUES({self.score_hero})""")
-        con.close()
+    def score_clear(self):
+        self.score_hero = 0
+        self.score_enemy = 0
 
     def get_score(self):
-        # Выполнение запроса и получение всех результатов
-        result = self.cur.execute("""SELECT * FROM scores""").fetchall()
+        return (self.score_hero, self.score_enemy)
 
-        # Вывод результатов на экран
-        for elem in result:
-            print(elem)
-
-        con.close()
 
 '''
 background = DrawBackground()
