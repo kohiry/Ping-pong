@@ -3,11 +3,13 @@ pygame.init()
 
 size = width, height = 800, 600
 
+
 class Ball:
-    def __init__(self, coord, screen):
+    def __init__(self, coord, screen, width):
         self.pos = coord
         self.x, self.y = -200, -200
         self.screen = screen
+        self.width = width
         self.clock = pygame.time.Clock()
 
     def run(self, x, y, coord, width, height):
@@ -50,13 +52,13 @@ class Ball:
         y += self.y // 60
         self.clock.tick(60)
         self.pos = (int(x), int(y))
-        pygame.draw.circle(self.screen, (255, 255, 255), self.pos, 10)
+        pygame.draw.circle(self.screen, (255, 255, 255), self.pos, self.width)
 
 
 def menu_sprite():  # download sprite: list with sprite menu
     sprites = []
     for i in range(1, 12):
-        sprites.append(pygame.image.load(f'data/menu_{str(i)}.png'))
+        sprites.append(pygame.image.load(f'data/menu_{str(i)}.png').convert())
     return sprites
 
 
