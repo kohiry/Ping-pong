@@ -19,7 +19,7 @@ class Ball:
         if speed == speeds_all[0]:
             if coord[0] <= start:
                 return speeds_all[2]
-            if coord[1] <= start:
+            if coord[1] <= 0:
                 return speeds_all[3]
             else:
                 return speed
@@ -33,7 +33,7 @@ class Ball:
         elif speed == speeds_all[2]:
             if coord[0] >= width:
                 return speeds_all[0]
-            if coord[1] <= start:
+            if coord[1] <= 0:
                 return speeds_all[1]
             else:
                 return speed
@@ -46,20 +46,27 @@ class Ball:
                 return speed
         # надо разобраться с тем, какой start пренадлежит какой координате width или height
 
-    def collide(self, rect):
-        if self.rect.colliderect(rect):
-            x, y = self.pos
-            self.x, self.y = self.run(self.x, self.y, self.pos, width, height, rect.x)
+    def rects(self):
+        return pygame.Rect(*self.pos, self.width, self.width)
 
+    def collide(self, rect, width, height, flag):
+        if self.rects().colliderect(rect):
+            if flag:
+                self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0)
+            else:
+                self.x, self.y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width)
 
-    def draw(self, width, height, start):
+        else:
+            self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, -200)
+
+    def draw(self, width, height):
         x, y = self.pos
-        self.x, self.y = self.run(self.x, self.y, self.pos, width, height, start)
         x += self.x // 60
         y += self.y // 60
         self.clock.tick(60)
         self.pos = (int(x), int(y))
-        pygame.draw.circle(self.screen, (255, 255, 255), self.pos, self.width)
+        pygame.draw.rect(self.screen, (255, 255, 255), (*self.pos, self.width, self.width))
+
 
 
 def transforms(sprite, width, height):
@@ -91,6 +98,9 @@ class Hero:
             self.y += self.speed // 60
         self.clock.tick(60)
 
+    def rects(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
+
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
 
@@ -113,6 +123,9 @@ class Enemy:
         elif self.y + (self.height // 2) < y and self.y <= display_height - self.height:
             self.y += self.speed // 60
         self.clock.tick(60)
+
+    def rects(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))

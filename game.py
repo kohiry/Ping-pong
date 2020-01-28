@@ -18,14 +18,14 @@ anim_count = 0
 
 # данные, нужные для более универсального
 # представления персонажей на разных мониторах
-width_mob = x_mobs = width // 50
+width_mob = x_mobs = width // 45
 y_mobs = height // 2
-height_mob = height // 7
+height_mob = height // 5
 
 speed_mob = 360
 
 # объекты движующиеся
-ball = classes.Ball((400, 560), screen, 25)
+ball = classes.Ball((400, 560), screen, 35)
 enemy = classes.Enemy(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
 hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob)
 
@@ -47,9 +47,14 @@ def draw():
 running = True
 clock = pygame.time.Clock()
 while running:
+    pygame.mouse.set_visible
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
+            hero.y = event.pos[1]
+            clock.tick(60)
+
     # события клавишей
     keys = pygame.key.get_pressed()
 
@@ -71,13 +76,14 @@ while running:
         draw()
     if ismenu:
         # движение моба
-        enemy.AI(ball.pos[1], height)
+        if ball.pos[0] <= width // 2:
+            enemy.AI(ball.pos[1], height)
         # отрисовки
         ball.draw(width, height)
         enemy.draw(screen)
         hero.draw(screen)
-        ball.collide(enemy.rect)
-        ball.collide(hero.rect)
+        ball.collide(enemy.rects(), width, height, False)
+        ball.collide(hero.rects(), width, height, True)
 
         background.draw(width // 2, height, screen)
 
