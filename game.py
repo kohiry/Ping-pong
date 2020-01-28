@@ -1,9 +1,13 @@
 import pygame
 import classes
 pygame.init()
+from screeninfo import get_monitors
 
-size = width, height = 800, 600
-screen = pygame.display.set_mode(size)
+
+size = width, height = get_monitors()[0].width, get_monitors()[0].height
+# screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode((0, 0),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
+pygame.display.set_caption('Classic game')
 
 White = (255, 255, 255)
 Black = (0, 0, 0)
@@ -12,24 +16,18 @@ bol = False
 start = False
 anim_count = 0
 
-ball = classes.Ball((400, 560), screen)
+ball = classes.Ball((400, 560), screen, 25)
+
 background = classes.DrawBackground()
-
-def menu_sprite():  # download sprite: list with sprite menu
-    sprites = []
-    for i in range(1, 12):
-        sprites.append(pygame.image.load(str(f'data/menu_{str(i)}.png')))
-    return sprites
-
-sprite_menu = menu_sprite()
+sprite_menu = classes.menu_sprite()
+classes.transforms(sprite_menu, width, height)
 
 def draw():
     global anim_count
-    if anim_count + 1 >= 55:
+    if anim_count + 1 >= 20:
         anim_count = 0
     screen.blit(sprite_menu[anim_count // 5], (0, 0))
     anim_count += 1
-
 
 
 running = True
@@ -38,29 +36,32 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            pass
-
+    # события клавишей
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
         pass
-    elif keys[pygame.K_DOWN]:
+    if keys[pygame.K_DOWN]:
         pass
-    elif keys[pygame.K_w]:
+    if keys[pygame.K_w]:
         pass
-    elif keys[pygame.K_s]:
+    if keys[pygame.K_s]:
         pass
-    elif keys[pygame.K_SPACE]:
+    if keys[pygame.K_SPACE]:
         start = True
+    if keys[pygame.K_ESCAPE]:
+        running = False
 
-    if start:  # сменить список, на просто объект
+    screen.fill(Black)
+
+    if start:
         bol = True
     else:
         draw()
-    screen.fill(Black)
     if bol:
         ball.draw(width, height)
-    background.draw(width//2, height, screen)
+        background.draw(width//2, height, screen)
     pygame.display.flip()
 
 pygame.quit()
+
+# добавить отрисовку и движение врага и героя
