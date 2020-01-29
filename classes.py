@@ -79,13 +79,13 @@ class Ball:
     def who_start(self, width, height, side):
         if side:
             self.score.update_enemy()
-            self.x, self.y = -self.speed, -self.speed
+            self.x, self.y = self.speed, self.speed
         else:
             self.score.update_hero()
-            self.x, self.y = self.speed, self.speed
+            self.x, self.y = -self.speed, -self.speed
         self.pos = width // 2, height // 2
         # проверки, если кто-то получил 10 очков, всё обнуляется
-        if self.score.score_enemy == 10 or self.score.score_hero == 10:
+        if self.score.score_enemy == 15 or self.score.score_hero == 15:
             self.score.score_clear()
 
     def get_score(self):
