@@ -29,10 +29,10 @@ height_mob = height // 5
 speed_mob = 360
 
 # объекты движующиеся
-ball = classes.Ball((400, 560), screen, 35)
 enemy = classes.Enemy(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
 hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob)
 hero_2 = classes.Hero(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
+ball = classes.Ball((400, 560), screen, 35, hero, enemy, hero_2)
 
 # объекты дисплейные
 background = classes.DrawBackground()

@@ -5,7 +5,10 @@ size = width, height = 800, 600
 
 
 class Ball:
-    def __init__(self, coord, screen, width):
+    def __init__(self, coord, screen, width, obj_1, obj_2, obj_3):
+        self.speed_start = 700
+        self.game = '1 player'
+        self.obj = [obj_1, obj_2, obj_3]
         self.pos = coord
         self.speed = 700
         self.x, self.y = self.speed, self.speed
@@ -17,21 +20,29 @@ class Ball:
         self.start = True
         self.score = Score()
 
+    def game_mode(mode):
+        self.game = mode
+
     def run(self, x, y, coord, width, height, start, flag):
         speed = (x, y)
         speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
                       (self.speed, -self.speed), (-self.speed, self.speed)]
 
 
-        def help(speed, side):
+        def help(speed, side):  #возникли проблемы со скоростью, она меняется, из-за чего все привязанные
+        # к self.speed вещи начинают барахлить, чсто по итогу приводит к return Non-type 
             if flag:
                 self.sound.play_jump()
+                self.update_speed()
                 return speed
             else:
                 self.sound.play_die()
+
                 if side == 'right':
+                    self.restart_speed()
                     return 1, 1
                 elif side == 'left':
+                    self.restart_speed()
                     return 2, 2
 
 
@@ -94,6 +105,24 @@ class Ball:
     def rects(self):
         return pygame.Rect(*self.pos, self.width, self.width)
 
+    def update_speed(self):  # self.obj [hero, enemy, hero_2]
+        speed = 500
+        self.obj[0].speed += speed
+        self.speed += speed
+        if self.game == '1 player':
+            self.obj[1].speed += speed
+        elif self.game == '2 player':
+            self.obj[2].speed += speed
+
+    def restart_speed(self):
+        self.obj[0].speed = self.obj[0].speed_start
+        self.obj[1].speed = self.obj[1].speed_start
+        self.obj[2].speed = self.obj[2].speed_start
+        self.speed = self.speed_start
+
+
+
+
     def collide(self, rect, width, height, flag):
         if self.rects().colliderect(rect):
             if flag:
@@ -141,6 +170,7 @@ class Hero:
         self.height = height
         self.width = width
         self.speed = speed
+        self.speed_start = speed
         self.color = (255, 255, 255)
         self.clock = pygame.time.Clock()
         self.rect = pygame.Rect(x, y, width, height)
@@ -166,6 +196,7 @@ class Enemy:
         self.height = height
         self.width = width
         self.speed = speed
+        self.speed_start = speed
         self.color = (255, 255, 255)
         self.clock = pygame.time.Clock()
         self.rect = pygame.Rect(x, y, width, height)
