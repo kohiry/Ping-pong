@@ -24,20 +24,36 @@ class Ball:
         self.game = mode
 
     def run(self, x, y, coord, width, height, start, flag):
-        speed = (x, y)
-        speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
+        self.speed_old = (x, y)
+        self.speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
                       (self.speed, -self.speed), (-self.speed, self.speed)]
 
+        def positive_or_negative(number, speed):
+            if number < 0:
+                return -speed
+            else:
+                return speed
 
-        def help(speed, side):  #возникли проблемы со скоростью, она меняется, из-за чего все привязанные
-        # к self.speed вещи начинают барахлить, чсто по итогу приводит к return Non-type 
+        def help(speeds, side):  #возникли проблемы со скоростью, она меняется, из-за чего все привязанные
+            # к self.speed вещи начинают барахлить, чсто по итогу приводит к return Non-type
             if flag:
                 self.sound.play_jump()
-                self.update_speed()
-                return speed
+                a = self.update_speed()
+                speed_old = list(self.speed_old)
+                speed_old[0] += positive_or_negative(speed_old[1], a)
+                speed_old[1] += positive_or_negative(speed_old[1], a)
+                self.speed_old = tuple(speed_old)
+                self.speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
+                              (self.speed, -self.speed), (-self.speed, self.speed)]
+                speeds_beta = list(speeds)
+                speeds_beta[0] += positive_or_negative(speeds_beta[0], a)
+                speeds_beta[1] += positive_or_negative(speeds_beta[1], a)
+                print(speed_old[1], self.speed_old)
+                return tuple(speeds_beta)
             else:
                 self.sound.play_die()
-
+                self.speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
+                              (self.speed, -self.speed), (-self.speed, self.speed)]
                 if side == 'right':
                     self.restart_speed()
                     return 1, 1
@@ -46,45 +62,47 @@ class Ball:
                     return 2, 2
 
 
-        if speed == speeds_all[0]:
+        if self.speed_old == self.speeds_all[0]:
             if coord[0] <= start:
-                return help(speeds_all[2], 'left')
+                return help(self.speeds_all[2], 'left')
 
             if coord[1] <= 0:
                 self.sound.play_jump()
-                return speeds_all[3]
+                return self.speeds_all[3]
             else:
-                return speed
+                return self.speed_old
 
-        elif speed == speeds_all[1]:
+        elif self.speed_old == self.speeds_all[1]:
             if coord[0] >= width:
-                return help(speeds_all[3], 'right')
+                return help(self.speeds_all[3], 'right')
 
             if coord[1] >= height:
                 self.sound.play_jump()
-                return speeds_all[2]
+                return self.speeds_all[2]
             else:
-                return speed
+                return self.speed_old
 
-        elif speed == speeds_all[2]:
+        elif self.speed_old == self.speeds_all[2]:  # туть
             if coord[0] >= width:
-                return help(speeds_all[0], 'right')
+                a = help(self.speeds_all[0], 'right')
+                print(a, self.speed_old, self.speeds_all)
+                return a
 
             if coord[1] <= 0:
                 self.sound.play_jump()
-                return speeds_all[1]
+                return self.speeds_all[1]
             else:
-                return speed
+                return self.speed_old
 
-        elif speed == speeds_all[3]:
+        elif self.speed_old == self.speeds_all[3]:
             if coord[0] <= start:
-                return help(speeds_all[1], 'left')
+                return help(self.speeds_all[1], 'left')
 
             if coord[1] >= height:
                 # звук отпрыгивания
-                return speeds_all[0]
+                return self.speeds_all[0]
             else:
-                return speed
+                return self.speed_old
         # надо разобраться с тем, какой start пренадлежит какой координате width или height
 
     def who_start(self, width, height, side):
@@ -98,6 +116,7 @@ class Ball:
         # проверки, если кто-то получил 10 очков, всё обнуляется
         if self.score.score_enemy == 15 or self.score.score_hero == 15:
             self.score.score_clear()
+            self.score.play_score()
 
     def get_score(self):
         return self.score.get_score()
@@ -106,13 +125,15 @@ class Ball:
         return pygame.Rect(*self.pos, self.width, self.width)
 
     def update_speed(self):  # self.obj [hero, enemy, hero_2]
-        speed = 500
+        speed = 25
+
         self.obj[0].speed += speed
         self.speed += speed
         if self.game == '1 player':
             self.obj[1].speed += speed
         elif self.game == '2 player':
             self.obj[2].speed += speed
+        return speed
 
     def restart_speed(self):
         self.obj[0].speed = self.obj[0].speed_start
@@ -123,7 +144,9 @@ class Ball:
 
 
 
+
     def collide(self, rect, width, height, flag):
+        print(self.x)
         if self.rects().colliderect(rect):
             if flag:
                 self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
@@ -224,8 +247,6 @@ class DrawBackground:
         self.text_y = 10
         self.score = {'enemy':'0', 'hero':'0'}
 
-
-
     def change_score(self, who, score):
         if who == 'enemy' or who == 'hero':
             self.score[who] = str(score)
@@ -233,7 +254,7 @@ class DrawBackground:
             print('Неверные даны данные')
 
     def draw(self, x, Dheight, screen):
-        font = pygame.font.Font(None, 70)
+        font = pygame.font.Font('pixle_font.ttf', 70)
         White = (255, 255, 255)
         enemy_txt = font.render(self.score['enemy'], 1, (255, 255, 255))
         hero_txt = font.render(self.score['hero'], 1, (255, 255, 255))

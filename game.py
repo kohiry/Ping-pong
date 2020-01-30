@@ -45,9 +45,9 @@ classes.transforms(sprite_menu, width, height)
 
 def draw_tutorial():  # отрисовка туториала
     global count_tutorial
-    if count_tutorial + 1 >= 75:
+    if count_tutorial + 1 >= 150:
         count_tutorial = 0
-    screen.blit(sprite_tutorial[count_tutorial // 5], (0, 0))
+    screen.blit(sprite_tutorial[count_tutorial // 10], (0, 0))
     count_tutorial += 1
 
 def draw_menu():  # отрисовка меню
