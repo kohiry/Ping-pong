@@ -48,7 +48,6 @@ class Ball:
                 speeds_beta = list(speeds)
                 speeds_beta[0] += positive_or_negative(speeds_beta[0], a)
                 speeds_beta[1] += positive_or_negative(speeds_beta[1], a)
-                print(speed_old[1], self.speed_old)
                 return tuple(speeds_beta)
             else:
                 self.sound.play_die()
@@ -85,7 +84,6 @@ class Ball:
         elif self.speed_old == self.speeds_all[2]:  # туть
             if coord[0] >= width:
                 a = help(self.speeds_all[0], 'right')
-                print(a, self.speed_old, self.speeds_all)
                 return a
 
             if coord[1] <= 0:
@@ -146,7 +144,6 @@ class Ball:
 
 
     def collide(self, rect, width, height, flag):
-        print(self.x)
         if self.rects().colliderect(rect):
             if flag:
                 self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)

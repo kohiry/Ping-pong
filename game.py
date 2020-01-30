@@ -96,6 +96,7 @@ while running:
                         game_2 = True
                     if count_menu == 3:
                         running = False
+                    pygame.time.wait(1000)
 
 
         if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
