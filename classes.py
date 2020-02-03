@@ -7,11 +7,13 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width, obj_1, obj_2, obj_3):
         self.speed_start = 700
+        self.angle_start = 500
         self.game = '1 player'
         self.obj = [obj_1, obj_2, obj_3]
         self.pos = coord
         self.speed = 700
-        self.x, self.y = self.speed, self.speed
+        self.angle = 500
+        self.x, self.y = self.speed, self.angle
         self.screen = screen
         self.width = width
         self.clock = pygame.time.Clock()
@@ -25,8 +27,8 @@ class Ball:
 
     def run(self, x, y, coord, width, height, start, flag):
         self.speed_old = (x, y)
-        self.speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
-                      (self.speed, -self.speed), (-self.speed, self.speed)]
+        self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
+                      (self.speed, -self.angle), (-self.speed, self.angle)]
 
         def positive_or_negative(number, speed):
             if number < 0:
@@ -43,16 +45,16 @@ class Ball:
                 speed_old[0] += positive_or_negative(speed_old[1], a)
                 speed_old[1] += positive_or_negative(speed_old[1], a)
                 self.speed_old = tuple(speed_old)
-                self.speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
-                              (self.speed, -self.speed), (-self.speed, self.speed)]
+                self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
+                              (self.speed, -self.angle), (-self.speed, self.angle)]
                 speeds_beta = list(speeds)
                 speeds_beta[0] += positive_or_negative(speeds_beta[0], a)
                 speeds_beta[1] += positive_or_negative(speeds_beta[1], a)
                 return tuple(speeds_beta)
             else:
                 self.sound.play_die()
-                self.speeds_all = [(-self.speed, -self.speed), (self.speed, self.speed),
-                              (self.speed, -self.speed), (-self.speed, self.speed)]
+                self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
+                              (self.speed, -self.angle), (-self.speed, self.angle)]
                 if side == 'right':
                     self.restart_speed()
                     return 1, 1
@@ -60,6 +62,7 @@ class Ball:
                     self.restart_speed()
                     return 2, 2
 
+        print(self.speed_old)
 
         if self.speed_old == self.speeds_all[0]:
             if coord[0] <= start:
@@ -138,10 +141,7 @@ class Ball:
         self.obj[1].speed = self.obj[1].speed_start
         self.obj[2].speed = self.obj[2].speed_start
         self.speed = self.speed_start
-
-
-
-
+        self.angle = self.angle_start 
 
     def collide(self, rect, width, height, flag):
         if self.rects().colliderect(rect):
