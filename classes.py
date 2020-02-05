@@ -9,7 +9,7 @@ class Ball:
         self.speed_start = 700
         self.angle_start = 500
         self.game = '1 player'
-        self.obj = [obj_1, obj_2, obj_3]
+        self.obj = [obj_1, obj_2, obj_3]  # hero, enemy, hero_2
         self.pos = coord
         self.speed = 700
         self.angle = 500
@@ -22,7 +22,7 @@ class Ball:
         self.start = True
         self.score = Score()
 
-    def game_mode(mode):
+    def game_mode(self, mode):
         self.game = mode
 
     def run(self, x, y, coord, width, height, start, flag):
@@ -61,8 +61,6 @@ class Ball:
                 elif side == 'left':
                     self.restart_speed()
                     return 2, 2
-
-        print(self.speed_old)
 
         if self.speed_old == self.speeds_all[0]:
             if coord[0] <= start:
@@ -104,20 +102,27 @@ class Ball:
                 return self.speeds_all[0]
             else:
                 return self.speed_old
-        # надо разобраться с тем, какой start пренадлежит какой координате width или height
+        print(self.speed_old, self.speeds_all)
 
     def who_start(self, width, height, side):
+        # куда спавнить мяч в случае пройгрыша
         if side:
             self.score.update_enemy()
-            self.x, self.y = self.speed, self.speed
+            self.x, self.y = self.speed, self.angle
+            self.pos = width // 2, height // 2
+
         else:
             self.score.update_hero()
-            self.x, self.y = -self.speed, -self.speed
-        self.pos = width // 2, height // 2
-        # проверки, если кто-то получил 10 очков, всё обнуляется
+            self.x, self.y = -self.speed, -self.angle
+            if self.game_mode == '1 player':
+                self.pos = width // 2, height // 2
+            else:
+                self.pos = width // 2, height // 2
+
+        # проверки, если кто-то получил 15 очков, всё обнуляется
         if self.score.score_enemy == 15 or self.score.score_hero == 15:
             self.score.score_clear()
-            self.score.play_score()
+            self.sound.play_score()
 
     def get_score(self):
         return self.score.get_score()
@@ -125,11 +130,12 @@ class Ball:
     def rects(self):
         return pygame.Rect(*self.pos, self.width, self.width)
 
-    def update_speed(self):  # self.obj [hero, enemy, hero_2]
+    def update_speed(self):
         speed = 25
-
+        # обновление скоростей для всех объектов
         self.obj[0].speed += speed
         self.speed += speed
+        self.angle += speed
         if self.game == '1 player':
             self.obj[1].speed += speed
         elif self.game == '2 player':
@@ -141,7 +147,7 @@ class Ball:
         self.obj[1].speed = self.obj[1].speed_start
         self.obj[2].speed = self.obj[2].speed_start
         self.speed = self.speed_start
-        self.angle = self.angle_start 
+        self.angle = self.angle_start
 
     def collide(self, rect, width, height, flag):
         if self.rects().colliderect(rect):
@@ -298,21 +304,3 @@ class Score:
 
     def get_score(self):
         return (self.score_hero, self.score_enemy)
-
-
-'''
-background = DrawBackground()
-
-size = width, height = 800, 600
-screen = pygame.display.set_mode(size)
-
-run = True
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    background.draw(width//2, height, screen)
-    pygame.display.flip()
-
-pygame.quit()
-'''

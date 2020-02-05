@@ -26,7 +26,7 @@ width_mob = x_mobs = width // 45
 y_mobs = height // 2
 height_mob = height // 5
 
-speed_mob = 360
+speed_mob = 700
 
 # объекты движующиеся
 enemy = classes.Enemy(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
@@ -134,6 +134,7 @@ while running:
     if ismenu and not game and not game_2:
         draw_menu()
     if game:
+        ball.game_mode('1 player')
         # движение моба
         if ball.pos[0] <= width // 2:
             enemy.AI(ball.pos[1], height)
@@ -148,6 +149,7 @@ while running:
         ball.collide(hero.rects(), width, height, True)
 
     if game_2:
+        ball.game_mode('2 player')
         background.draw(width // 2, height, screen)
         background.change_score('enemy', ball.get_score()[1])
         background.change_score('hero', ball.get_score()[0])
