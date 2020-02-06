@@ -104,20 +104,41 @@ class Ball:
                 return self.speed_old
         print(self.speed_old, self.speeds_all)
 
-    def who_start(self, width, height, side):
-        # куда спавнить мяч в случае пройгрыша
+    def where_you_stand(self, height, side):  # вспомогательная функция для who_start
+        # чтобы определять скорость которую давать мячу, разделяя поле на 2 части
+        # смотреть в какой находится юнит
+        def check(y):  # вспомогательная функция с проверками
+            middle = height // 2
+            if y >= middle:  # если выше середины
+                return True
+            elif y < middle:  # если ниже
+                return False
+
+        if side:
+            return check(self.obj[0].y)
+        else:
+            if self.game == '1 player':
+                return check(self.obj[1].y)
+            elif self.game == '2 player':
+                return check(self.obj[2].y)
+
+    def who_start(self, width, height, side):  # куда спавнить мяч в случае пройгрыша
         if side:
             self.score.update_enemy()
-            self.x, self.y = self.speed, self.angle
-            self.pos = width // 2, height // 2
+            if self.where_you_stand(height, side):  # если выше середины
+                self.x, self.y = self.speed, self.angle
+            else:  # если ниже
+                self.x, self.y = self.speed, -self.angle
 
         else:
             self.score.update_hero()
-            self.x, self.y = -self.speed, -self.angle
-            if self.game_mode == '1 player':
-                self.pos = width // 2, height // 2
-            else:
-                self.pos = width // 2, height // 2
+            if self.where_you_stand(height, side):  # если выше середины
+                self.x, self.y = -self.speed, self.angle
+            else:  # если ниже
+                self.x, self.y = -self.speed, -self.angle
+
+        self.pos = width // 2, height // 2
+        print(self.pos)
 
         # проверки, если кто-то получил 15 очков, всё обнуляется
         if self.score.score_enemy == 15 or self.score.score_hero == 15:
