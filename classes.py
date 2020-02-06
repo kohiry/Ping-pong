@@ -179,14 +179,14 @@ class Ball:
                 return True
 
         def find_dot(obj, y):  # не тот y
-            middle = obj.height // 2
+            middle = obj.y + obj.height // 2
             jump = obj.height // 100
-            print(obj.y, y, middle - jump, middle + jump, middle + jump, middle * 2)
-            if obj.y <= y < (middle - jump):
+            print((middle + jump), y, (middle * 2) + middle)
+            if obj.y - obj.y // 4 <= y < (middle - jump):
                 return '1'  # от верхней точки до середина - прыжок
             elif (middle - jump) <= y <= (middle + jump):
                 return '2'  # от до середина - прыжок до середины + прыжок
-            elif (middle + jump) < y <= (middle * 2):
+            elif (middle + jump) < y <= (middle * 2) + middle:
                 return '3'  # от середины + прыжок до конца
 
         def big_check(x, y):  # функция проверки обеих координат
@@ -212,18 +212,17 @@ class Ball:
                     return x, y + y // 2 + y // 3
             elif dot == '3':  # от середины + прыжок до конца
                 return -x, -x
-
         if self.rects().colliderect(rect):
             if flag:
                 x, y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
-                print(find_dot(self.obj[0], self.y))
-                self.x, self.y = speed(x, y, find_dot(self.obj[0], self.y))
+                self.x, self.y = speed(x, y, find_dot(self.obj[0], int(self.pos[1])))
+                print(self.x, self.y)
             else:
                 x, y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
                 if self.game == '1 player':
-                    self.x, self.y = speed(x, y, find_dot(self.obj[1], self.y))
+                    self.x, self.y = speed(x, y, find_dot(self.obj[1], self.pos[1]))
                 elif self.game == '2 player':
-                    self.x, self.y = speed(x, y, find_dot(self.obj[2], self.y))
+                    self.x, self.y = speed(x, y, find_dot(self.obj[2], self.pos[1]))
                 else:
                     print('Ошибка self.game, 195 строка classes')
 
