@@ -178,35 +178,52 @@ class Ball:
             elif number >= 0:
                 return True
 
-        def find_dot(obj, y):
+        def find_dot(obj, y):  # не тот y
             middle = obj.height // 2
             jump = obj.height // 100
-            if obj.y <= y < middle - jump:
+            print(obj.y, y, middle - jump, middle + jump, middle + jump, middle * 2)
+            if obj.y <= y < (middle - jump):
                 return '1'  # от верхней точки до середина - прыжок
-            elif middle - jump <= y <= middle + jump:
+            elif (middle - jump) <= y <= (middle + jump):
                 return '2'  # от до середина - прыжок до середины + прыжок
-            elif middle + jump // 100 < y <= middle * 2:
+            elif (middle + jump) < y <= (middle * 2):
                 return '3'  # от середины + прыжок до конца
+
+        def big_check(x, y):  # функция проверки обеих координат
+            if positive_or_negative(x):
+                if positive_or_negative(y):
+                    return 'full'
+                else:
+                    return 'y < 0'
+            else:
+                if positive_or_negative(y):
+                    return 'x < 0'
+                else:
+                    return 'y < 0; x < 0'
+
 
         def speed(x, y, dot):
             if dot == '1':  # от верхней точки до середина - прыжок
-                pass
+                return x, x
             elif dot == '2':  # от до середина - прыжок до середины + прыжок
-                pass
+                if big_check(x, y) == 'full':
+                    return x, y - y // 2 - y // 3
+                if big_check(x, y) == 'y < 0':
+                    return x, y + y // 2 + y // 3
             elif dot == '3':  # от середины + прыжок до конца
-                pass
-
+                return -x, -x
 
         if self.rects().colliderect(rect):
             if flag:
                 x, y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
-                speed(x, y, find_dot(self.obj[0], y))
+                print(find_dot(self.obj[0], self.y))
+                self.x, self.y = speed(x, y, find_dot(self.obj[0], self.y))
             else:
                 x, y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
                 if self.game == '1 player':
-                    speed(x, y, find_dot(self.obj[1], y))
+                    self.x, self.y = speed(x, y, find_dot(self.obj[1], self.y))
                 elif self.game == '2 player':
-                    speed(x, y, find_dot(self.obj[2], y))
+                    self.x, self.y = speed(x, y, find_dot(self.obj[2], self.y))
                 else:
                     print('Ошибка self.game, 195 строка classes')
 
