@@ -171,11 +171,45 @@ class Ball:
         self.angle = self.angle_start
 
     def collide(self, rect, width, height, flag):
+
+        def positive_or_negative(number):  # функция чтобы проверять число больше или меньше нуля
+            if number < 0:
+                return False
+            elif number >= 0:
+                return True
+
+        def find_dot(obj, y):
+            middle = obj.height // 2
+            jump = obj.height // 100
+            if obj.y <= y < middle - jump:
+                return '1'  # от верхней точки до середина - прыжок
+            elif middle - jump <= y <= middle + jump:
+                return '2'  # от до середина - прыжок до середины + прыжок
+            elif middle + jump // 100 < y <= middle * 2:
+                return '3'  # от середины + прыжок до конца
+
+        def speed(x, y, dot):
+            if dot == '1':  # от верхней точки до середина - прыжок
+                pass
+            elif dot == '2':  # от до середина - прыжок до середины + прыжок
+                pass
+            elif dot == '3':  # от середины + прыжок до конца
+                pass
+
+
         if self.rects().colliderect(rect):
             if flag:
-                self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
+                x, y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
+                speed(x, y, find_dot(self.obj[0], y))
             else:
-                self.x, self.y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
+                x, y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
+                if self.game == '1 player':
+                    speed(x, y, find_dot(self.obj[1], y))
+                elif self.game == '2 player':
+                    speed(x, y, find_dot(self.obj[2], y))
+                else:
+                    print('Ошибка self.game, 195 строка classes')
+
 
         else:
             self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
