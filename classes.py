@@ -21,14 +21,19 @@ class Ball:
         self.sound = Sound()
         self.start = True
         self.score = Score()
+        self.rewrite_speed_all()
 
     def game_mode(self, mode):
         self.game = mode
 
-    def run(self, x, y, coord, width, height, start, flag):
-        self.speed_old = (x, y)
+    def rewrite_speed_all(self):
         self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
                       (self.speed, -self.angle), (-self.speed, self.angle)]
+        self.speed, self.angle = self.x, self.y
+
+    def run(self, x, y, coord, width, height, start, flag):
+        self.speed_old = (x, y)
+        self.rewrite_speed_all()
 
         def positive_or_negative(number, speed):
             if number < 0:
@@ -45,16 +50,14 @@ class Ball:
                 speed_old[0] += positive_or_negative(speed_old[1], a)
                 speed_old[1] += positive_or_negative(speed_old[1], a)
                 self.speed_old = tuple(speed_old)
-                self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
-                              (self.speed, -self.angle), (-self.speed, self.angle)]
+                self.rewrite_speed_all()
                 speeds_beta = list(speeds)
                 speeds_beta[0] += positive_or_negative(speeds_beta[0], a)
                 speeds_beta[1] += positive_or_negative(speeds_beta[1], a)
                 return tuple(speeds_beta)
             else:
                 self.sound.play_die()
-                self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
-                              (self.speed, -self.angle), (-self.speed, self.angle)]
+                self.rewrite_speed_all()
                 if side == 'right':
                     self.restart_speed()
                     return 1, 1
@@ -201,7 +204,6 @@ class Ball:
                 else:
                     return 'y < 0; x < 0'
 
-
         def speed(x, y, dot):
             if dot == '1':  # от верхней точки до середина - прыжок
                 return x, x
@@ -212,6 +214,8 @@ class Ball:
                     return x, y + y // 2 + y // 3
             elif dot == '3':  # от середины + прыжок до конца
                 return -x, -x
+
+
         if self.rects().colliderect(rect):
             if flag:
                 x, y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
@@ -225,7 +229,7 @@ class Ball:
                     self.x, self.y = speed(x, y, find_dot(self.obj[2], self.pos[1]))
                 else:
                     print('Ошибка self.game, 195 строка classes')
-
+            self.rewrite_speed_all()
 
         else:
             self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
@@ -233,6 +237,7 @@ class Ball:
             self.who_start(width, height, True)
         elif self.x == 2:
             self.who_start(width, height, False)
+        print(self.pos, self.x, self.y)
 
     def draw(self, width, height):
         x, y = self.pos
