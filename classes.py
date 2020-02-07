@@ -7,7 +7,7 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width, obj_1, obj_2, obj_3):
         self.speed_start = 700
-        self.angle_start = 500
+        self.angle_start = 700
         self.game = '1 player'
         self.obj = [obj_1, obj_2, obj_3]  # hero, enemy, hero_2
         self.pos = coord
@@ -27,9 +27,10 @@ class Ball:
         self.game = mode
 
     def rewrite_speed_all(self):
-        self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
-                      (self.speed, -self.angle), (-self.speed, self.angle)]
-        self.speed, self.angle = self.x, self.y
+        self.speeds_all = [(-abs(self.speed), -abs(self.angle)), (abs(self.speed), abs(self.angle)),
+                      (abs(self.speed), -abs(self.angle)), (-abs(self.speed), abs(self.angle))]
+        self.speed, self.angle = abs(self.x), abs(self.y)
+
 
     def run(self, x, y, coord, width, height, start, flag):
         self.speed_old = (x, y)
@@ -237,7 +238,7 @@ class Ball:
             self.who_start(width, height, True)
         elif self.x == 2:
             self.who_start(width, height, False)
-        print(self.pos, self.x, self.y)
+        print(self.pos, self.x, self.y, self.speeds_all)
 
     def draw(self, width, height):
         x, y = self.pos
