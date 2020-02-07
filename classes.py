@@ -7,12 +7,12 @@ size = width, height = 800, 600
 class Ball:
     def __init__(self, coord, screen, width, obj_1, obj_2, obj_3):
         self.speed_start = 700
-        self.angle_start = 500
+        self.angle_start = 700
         self.game = '1 player'
         self.obj = [obj_1, obj_2, obj_3]  # hero, enemy, hero_2
         self.pos = coord
         self.speed = 700
-        self.angle = 500
+        self.angle = 700
         self.x, self.y = self.speed, self.angle
         self.screen = screen
         self.width = width
@@ -21,14 +21,19 @@ class Ball:
         self.sound = Sound()
         self.start = True
         self.score = Score()
+        self.rewrite_speed_all()
 
     def game_mode(self, mode):
         self.game = mode
 
+    def rewrite_speed_all(self):
+        self.speeds_all = [(-abs(self.speed), -abs(self.angle)), (abs(self.speed), abs(self.angle)),
+                      (abs(self.speed), -abs(self.angle)), (-abs(self.speed), abs(self.angle))]
+        self.speed, self.angle = abs(self.x), abs(self.y)
+
     def run(self, x, y, coord, width, height, start, flag):
         self.speed_old = (x, y)
-        self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
-                      (self.speed, -self.angle), (-self.speed, self.angle)]
+        self.rewrite_speed_all()
 
         def positive_or_negative(number, speed):
             if number < 0:
@@ -45,16 +50,14 @@ class Ball:
                 speed_old[0] += positive_or_negative(speed_old[1], a)
                 speed_old[1] += positive_or_negative(speed_old[1], a)
                 self.speed_old = tuple(speed_old)
-                self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
-                              (self.speed, -self.angle), (-self.speed, self.angle)]
+                self.rewrite_speed_all()
                 speeds_beta = list(speeds)
                 speeds_beta[0] += positive_or_negative(speeds_beta[0], a)
                 speeds_beta[1] += positive_or_negative(speeds_beta[1], a)
                 return tuple(speeds_beta)
             else:
                 self.sound.play_die()
-                self.speeds_all = [(-self.speed, -self.angle), (self.speed, self.angle),
-                              (self.speed, -self.angle), (-self.speed, self.angle)]
+                self.rewrite_speed_all()
                 if side == 'right':
                     self.restart_speed()
                     return 1, 1
@@ -171,11 +174,82 @@ class Ball:
         self.angle = self.angle_start
 
     def collide(self, rect, width, height, flag):
+
+        def positive_or_negative(number):  # функция чтобы проверять число больше или меньше нуля
+            if number < 0:
+                return False
+            elif number >= 0:
+                return True
+
+        def find_dot(obj, y):  # не тот y
+            jump = obj.height // 5
+            if obj.y - self.width // 2 <= y < obj.y + jump:
+                return '1'  # от верхней точки до середина - прыжок
+            elif obj.y + jump <= y <= obj.y + obj.height - jump:
+                return '2'  # от до середина - прыжок до середины + прыжок
+            elif obj.y + obj.height - jump < y <= obj.y + obj.height + self.width // 2:
+                return '3'  # от середины + прыжок до конца
+            print('проигнорировал все условия find_dot')
+
+        def big_check(x, y):  # функция проверки обеих координат
+            if positive_or_negative(x):
+                if positive_or_negative(y):
+                    return 'full'
+                else:
+                    return 'y < 0'
+            else:
+                if positive_or_negative(y):
+                    return 'x < 0'
+                else:
+                    return 'y < 0; x < 0'
+
+        def speed(x, y, dot, player):  # player=True игрок с права, player=False, слева
+            answer = big_check(x, y)
+            module_x = abs(x)
+            module_y = abs(y)
+            if dot == '1':  # от верхней точки до середина - прыжок
+                if player:
+                    return -module_x, -module_x
+                else:
+                    return module_x, -module_x
+            elif dot == '2':  # от до середина - прыжок до середины + прыжок
+
+                # все большие расчёты с игреком, это 10, 10 - 5 - 3, для умвеличения угла
+                if answer == 'full':
+                    if player:
+                        return -module_x, abs(module_y - module_y // 2)
+                    return module_x, abs(module_y - module_y // 2)
+                elif answer == 'y < 0; x < 0':
+                    if player:
+                        return module_x, abs(module_y - module_y // 2)
+                    return module_x, abs(module_y - module_y // 2)
+                elif answer == 'x < 0':
+                        return -module_x, abs(module_y - module_y // 2)
+                if answer == 'y < 0':
+                    return module_x, -abs(module_y - module_y // 2)
+                print('пропустил big_check')
+            elif dot == '3':  # от середины + прыжок до конца
+                if player:
+                    return -module_x, module_x
+                else:
+                    return module_x, module_x
+            else:
+                return x, y
+
+
         if self.rects().colliderect(rect):
             if flag:
-                self.x, self.y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
+                x, y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
+                self.x, self.y = speed(x, y, find_dot(self.obj[0], int(self.pos[1])), True)
             else:
-                self.x, self.y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
+                x, y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
+                if self.game == '1 player':
+                    self.x, self.y = speed(x, y, find_dot(self.obj[1], self.pos[1]), False)
+                elif self.game == '2 player':
+                    self.x, self.y = speed(x, y, find_dot(self.obj[2], self.pos[1]), False)
+                else:
+                    print('Ошибка self.game, 195 строка classes')
+            self.rewrite_speed_all()
 
         else:
             self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
