@@ -12,7 +12,7 @@ class Ball:
         self.obj = [obj_1, obj_2, obj_3]  # hero, enemy, hero_2
         self.pos = coord
         self.speed = 700
-        self.angle = 500
+        self.angle = 700
         self.x, self.y = self.speed, self.angle
         self.screen = screen
         self.width = width
@@ -186,11 +186,11 @@ class Ball:
             middle = obj.y + obj.height // 2
             jump = obj.height // 100
             print((middle + jump), y, (middle * 2) + middle)
-            if obj.y - obj.y // 4 <= y < (middle - jump):
+            if obj.y <= y < (middle - jump):
                 return '1'  # от верхней точки до середина - прыжок
             elif (middle - jump) <= y <= (middle + jump):
                 return '2'  # от до середина - прыжок до середины + прыжок
-            elif (middle + jump) < y <= (middle * 2) + middle:
+            elif (middle + jump) < y <= (middle * 2):
                 return '3'  # от середины + прыжок до конца
 
         def big_check(x, y):  # функция проверки обеих координат
@@ -207,14 +207,15 @@ class Ball:
 
         def speed(x, y, dot):
             if dot == '1':  # от верхней точки до середина - прыжок
-                return x, x
+                return -x, -x
             elif dot == '2':  # от до середина - прыжок до середины + прыжок
                 if big_check(x, y) == 'full':
                     return x, y - y // 2 - y // 3
                 if big_check(x, y) == 'y < 0':
                     return x, y + y // 2 + y // 3
+                print('пропустил big_check')
             elif dot == '3':  # от середины + прыжок до конца
-                return -x, -x
+                return x, x
 
 
         if self.rects().colliderect(rect):

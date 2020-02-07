@@ -70,7 +70,7 @@ while running:
                 ball.score.score_clear()
                 ball.pos = width // 2, height // 2
             if not start:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     start = True
             if ismenu and not game and not game_2:
                 sound.play_jump()
@@ -83,7 +83,7 @@ while running:
                     count_menu += 1
                     if count_menu >= 4:
                         count_menu = 1
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     if count_menu == 1:
                         ismenu = True
                         start = False
@@ -97,6 +97,7 @@ while running:
                     if count_menu == 3:
                         running = False
                     pygame.time.wait(1000)
+
 
 
         if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
@@ -122,6 +123,8 @@ while running:
         if keys[pygame.K_s] and hero_2.y <= height - height_mob:
             hero_2.move(False)
 
+    if keys[pygame.K_ESCAPE]:
+        running = False
     if keys[pygame.K_ESCAPE]:
         running = False
 
