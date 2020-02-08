@@ -31,7 +31,6 @@ class Ball:
                       (abs(self.speed), -abs(self.angle)), (-abs(self.speed), abs(self.angle))]
         self.speed, self.angle = abs(self.x), abs(self.y)
 
-
     def run(self, x, y, coord, width, height, start, flag):
         self.speed_old = (x, y)
         self.rewrite_speed_all()
@@ -195,7 +194,6 @@ class Ball:
                 return '2'  # от до середина - прыжок до середины + прыжок
             elif obj.y + obj.height - jump < y <= obj.y + obj.height + self.width // 2:
                 return '3'  # от середины + прыжок до конца
-
 
         def big_check(x, y):  # функция проверки обеих координат
             if positive_or_negative(x):
