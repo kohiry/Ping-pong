@@ -182,18 +182,14 @@ class Ball:
                 return True
 
         def find_dot(obj, y):  # не тот y
-            jump = obj.height // 3
-            print()
-            print(obj.y - self.width // 2, y, obj.y + jump, '|', obj.y - self.width // 2 <= y < obj.y + jump)
-            print(obj.y + jump, y, obj.y + obj.height - jump, '|', obj.y + jump <= y <= obj.y + obj.height - jump)
-            print(obj.y + obj.height - jump, y, obj.height + self.width // 2, '|', obj.y + obj.height - jump < y <= obj.height + self.width // 2)
-            print()
+            jump = obj.height // 5
             if obj.y - self.width // 2 <= y < obj.y + jump:
                 return '1'  # от верхней точки до середина - прыжок
             elif obj.y + jump <= y <= obj.y + obj.height - jump:
                 return '2'  # от до середина - прыжок до середины + прыжок
             elif obj.y + obj.height - jump < y <= obj.y + obj.height + self.width // 2:
                 return '3'  # от середины + прыжок до конца
+            print('проигнорировал все условия find_dot')
 
         def big_check(x, y):  # функция проверки обеих координат
             if positive_or_negative(x):
