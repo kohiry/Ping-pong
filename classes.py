@@ -183,15 +183,19 @@ class Ball:
                 return True
 
         def find_dot(obj, y):  # не тот y
-            middle = obj.y + obj.height // 2
-            jump = obj.height // 100
-            print((middle + jump), y, (middle * 2) + middle)
-            if obj.y <= y < (middle - jump):
+            jump = obj.height // 3
+            print()
+            print(obj.y - self.width // 2, y, obj.y + jump, '|', obj.y - self.width // 2 <= y < obj.y + jump)
+            print(obj.y + jump, y, obj.y + obj.height - jump, '|', obj.y + jump <= y <= obj.y + obj.height - jump)
+            print(obj.y + obj.height - jump, y, obj.height + self.width // 2, '|', obj.y + obj.height - jump < y <= obj.height + self.width // 2)
+            print()
+            if obj.y - self.width // 2 <= y < obj.y + jump:
                 return '1'  # от верхней точки до середина - прыжок
-            elif (middle - jump) <= y <= (middle + jump):
+            elif obj.y + jump <= y <= obj.y + obj.height - jump:
                 return '2'  # от до середина - прыжок до середины + прыжок
-            elif (middle + jump) < y <= (middle * 2):
+            elif obj.y + obj.height - jump < y <= obj.y + obj.height + self.width // 2:
                 return '3'  # от середины + прыжок до конца
+
 
         def big_check(x, y):  # функция проверки обеих координат
             if positive_or_negative(x):
@@ -205,30 +209,46 @@ class Ball:
                 else:
                     return 'y < 0; x < 0'
 
-        def speed(x, y, dot):
+        def speed(x, y, dot, player):  # player=True игрок с права, player=False, слева
+            answer = big_check(x, y)
+            module_x = abs(x)
+            module_y = abs(y)
             if dot == '1':  # от верхней точки до середина - прыжок
-                return -x, -x
+                if player:
+                    return -module_x, module_x
+                else:
+                    return module_x, module_x
             elif dot == '2':  # от до середина - прыжок до середины + прыжок
-                if big_check(x, y) == 'full':
-                    return x, y - y // 2 - y // 3
-                if big_check(x, y) == 'y < 0':
-                    return x, y + y // 2 + y // 3
+
+                # все большие расчёты с игреком, это 10, 10 - 5 - 3, для умвеличения угла
+                if answer == 'full':
+                    return module_x, abs(module_y - module_y // 2)
+                elif answer == 'y < 0; x < 0':
+                        return module_x, -abs(module_y - module_y // 2)
+                elif answer == 'x < 0':
+                        return -module_x, abs(module_y - module_y // 2)
+                if answer == 'y < 0':
+                    return module_x, -abs(module_y - module_y // 2)
                 print('пропустил big_check')
             elif dot == '3':  # от середины + прыжок до конца
-                return x, x
-
+                if player:
+                    return -module_x, -module_x
+                else:
+                    return module_x, -module_x
+            else:
+                return x, y
+                
 
         if self.rects().colliderect(rect):
             if flag:
                 x, y = self.run(self.x, self.y, self.pos, rect.x - rect.width, height, 0, True)
-                self.x, self.y = speed(x, y, find_dot(self.obj[0], int(self.pos[1])))
-                print(self.x, self.y)
+                self.x, self.y = speed(x, y, find_dot(self.obj[0], int(self.pos[1])), True)
             else:
                 x, y = self.run(self.x, self.y, self.pos,  width, height, rect.x + rect.width, True)
                 if self.game == '1 player':
-                    self.x, self.y = speed(x, y, find_dot(self.obj[1], self.pos[1]))
+                    self.x, self.y = speed(x, y, find_dot(self.obj[1], self.pos[1]), False)
                 elif self.game == '2 player':
-                    self.x, self.y = speed(x, y, find_dot(self.obj[2], self.pos[1]))
+                    self.x, self.y = speed(x, y, find_dot(self.obj[2], self.pos[1]), False)
                 else:
                     print('Ошибка self.game, 195 строка classes')
             self.rewrite_speed_all()
@@ -239,7 +259,6 @@ class Ball:
             self.who_start(width, height, True)
         elif self.x == 2:
             self.who_start(width, height, False)
-        print(self.pos, self.x, self.y, self.speeds_all)
 
     def draw(self, width, height):
         x, y = self.pos
