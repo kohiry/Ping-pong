@@ -215,16 +215,20 @@ class Ball:
             module_y = abs(y)
             if dot == '1':  # от верхней точки до середина - прыжок
                 if player:
-                    return -module_x, module_x
+                    return -module_x, -module_x
                 else:
-                    return module_x, module_x
+                    return module_x, -module_x
             elif dot == '2':  # от до середина - прыжок до середины + прыжок
 
                 # все большие расчёты с игреком, это 10, 10 - 5 - 3, для умвеличения угла
                 if answer == 'full':
+                    if player:
+                        return -module_x, abs(module_y - module_y // 2)
                     return module_x, abs(module_y - module_y // 2)
                 elif answer == 'y < 0; x < 0':
-                        return module_x, -abs(module_y - module_y // 2)
+                    if player:
+                        return module_x, abs(module_y - module_y // 2)
+                    return module_x, abs(module_y - module_y // 2)
                 elif answer == 'x < 0':
                         return -module_x, abs(module_y - module_y // 2)
                 if answer == 'y < 0':
@@ -232,12 +236,12 @@ class Ball:
                 print('пропустил big_check')
             elif dot == '3':  # от середины + прыжок до конца
                 if player:
-                    return -module_x, -module_x
+                    return -module_x, module_x
                 else:
-                    return module_x, -module_x
+                    return module_x, module_x
             else:
                 return x, y
-                
+
 
         if self.rects().colliderect(rect):
             if flag:
