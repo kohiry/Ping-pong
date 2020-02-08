@@ -38,10 +38,13 @@ ball = classes.Ball((400, 560), screen, 35, hero, enemy, hero_2)
 background = classes.DrawBackground()
 sprite_tutorial = classes.tutorial_sprite()
 sprite_menu = classes.menu_sprite()
+restart_sprite = classes.restart_sprite()
 
 # подравнивание меню под экран
 classes.transforms(sprite_tutorial, width, height)
 classes.transforms(sprite_menu, width, height)
+for i in restart_sprite:
+    classes.transforms(restart_sprite[i], width, height)
 
 def draw_tutorial():  # отрисовка туториала
     global count_tutorial
@@ -97,12 +100,6 @@ while running:
                     if count_menu == 3:
                         running = False
                     pygame.time.wait(1000)
-
-
-
-        if event.type == pygame.MOUSEMOTION and event.pos[1] <= height - height_mob//2 :
-            hero.y = event.pos[1]
-            clock.tick(60)
 
     # события клавишей
     keys = pygame.key.get_pressed()

@@ -28,7 +28,7 @@ class Ball:
 
     def rewrite_speed_all(self):
         self.speeds_all = [(-abs(self.speed), -abs(self.angle)), (abs(self.speed), abs(self.angle)),
-                      (abs(self.speed), -abs(self.angle)), (-abs(self.speed), abs(self.angle))]
+                            (abs(self.speed), -abs(self.angle)), (-abs(self.speed), abs(self.angle))]
         self.speed, self.angle = abs(self.x), abs(self.y)
 
     def run(self, x, y, coord, width, height, start, flag):
@@ -105,6 +105,8 @@ class Ball:
                 return self.speeds_all[0]
             else:
                 return self.speed_old
+        else:
+            return self.speed_old
         print(self.speed_old, self.speeds_all)
 
     def where_you_stand(self, height, side):  # вспомогательная функция для who_start
@@ -183,13 +185,19 @@ class Ball:
 
         def find_dot(obj, y):  # не тот y
             jump = obj.height // 5
+            middle = obj.height // 2
             if obj.y - self.width // 2 <= y < obj.y + jump:
-                return '1'  # от верхней точки до середина - прыжок
-            elif obj.y + jump <= y <= obj.y + obj.height - jump:
+                return '1'  # 1/5
+            elif obj.y + jump <= y <= obj.y + middle:  # 2/5
+                return '4'
+            elif obj.y + middle <= y <= obj.y + middle + jump:  # 3/5
                 return '2'  # от до середина - прыжок до середины + прыжок
-            elif obj.y + obj.height - jump < y <= obj.y + obj.height + self.width // 2:
+            elif obj.y + middle + jump <= y <= obj.y + obj.height - jump:  # 4/5
+                return '5'
+            elif obj.y + obj.height - jump < y <= obj.y + obj.height + self.width // 2:  # 5/5
                 return '3'  # от середины + прыжок до конца
-            print('проигнорировал все условия find_dot')
+            else:
+                return '2'
 
         def big_check(x, y):  # функция проверки обеих координат
             if positive_or_negative(x):
@@ -213,7 +221,6 @@ class Ball:
                 else:
                     return module_x, -module_x
             elif dot == '2':  # от до середина - прыжок до середины + прыжок
-
                 # все большие расчёты с игреком, это 10, 10 - 5 - 3, для умвеличения угла
                 if answer == 'full':
                     if player:
@@ -233,8 +240,17 @@ class Ball:
                     return -module_x, module_x
                 else:
                     return module_x, module_x
-            else:
-                return x, y
+            elif dot == '4':
+                if player:
+                    return -700, -500
+                else:
+                    return 700, -500
+            elif dot == '5':
+                if player:
+                    return -700, 500
+                else:
+                    return 700, 500
+
 
 
         if self.rects().colliderect(rect):
@@ -257,6 +273,12 @@ class Ball:
             self.who_start(width, height, True)
         elif self.x == 2:
             self.who_start(width, height, False)
+        print(self.y)
+        if -50 < self.y < 50:
+            if positive_or_negative(self.y):
+                self.y = -100
+            else:
+                self.y = 100
 
     def draw(self, width, height):
         x, y = self.pos
@@ -281,6 +303,14 @@ def menu_sprite(): # download sprite: list with sprite menu
     sprites = []
     for i in range(1, 5):
         sprites.append(pygame.image.load(f'data/menu_{str(i)}.png'))
+    return sprites
+
+def restart_sprite(): # download sprite: list with sprite menu
+    sprites = {}
+    sprites['1 player win'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(1, 3)]
+    sprites['1 player lose'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(3, 5)]
+    sprites['2 player win'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(5, 7)]
+    sprites['2 player lose'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(7, 9)]
     return sprites
 
 
