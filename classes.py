@@ -368,19 +368,20 @@ class Enemy:
     def add_ball(self, ball):
         self.ball.append(ball)
 
-    def add_size(self, size):
-        self.size = size
-
     def AI(self, y, display_height):  # y - координата объекта ball
         # дбоавить объект класса ball чтобы следить за его скоростью, если летит плоско
         # то берём другую скоростью
         if self.y + (self.height // 2) > y and self.y >= 0:
-            if self.ball[0].angle < 100 and self.ball[0].pos[1] > self.y - self.ball[0].angle * 3:
+            if self.ball[0].angle == 0:
+                self.y -= 10
+            elif self.ball[0].angle < 100 and self.ball[0].pos[1] > self.y - self.ball[0].angle * 3:
                 self.y -= self.ball[0].angle
             else:
                 self.y -= self.ball[0].angle // 60
         elif self.y + (self.height // 2) < y and self.y <= display_height - self.height:
-            if self.ball[0].angle < 100 and self.ball[0].pos[1] < self.y + self.ball[0].angle * 3:
+            if self.ball[0].angle == 0:
+                self.y += 10
+            elif self.ball[0].angle < 100 and self.ball[0].pos[1] < self.y + self.ball[0].angle * 3:
                 self.y += self.ball[0].angle
             else:
                 self.y += self.ball[0].angle // 60
