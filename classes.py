@@ -150,13 +150,13 @@ class Ball:
             self.score.score_clear()
             self.sound.play_score()
         # проверки, если кто-то получил 15 очков, всё обнуляется
-        if self.score.score_enemy == 2:
+        if self.score.score_enemy == 15:
             clear_score()
             if self.game == '1 player':
                 return '1 player lose'
             elif self.game == '2 player':
                 return '2 player lose'
-        elif self.score.score_hero == 2:
+        elif self.score.score_hero == 15:
             clear_score()
             if self.game == '1 player':
                 return '1 player win'
@@ -320,8 +320,8 @@ def restart_sprite(): # download sprite: list with sprite menu
     sprites = {}
     sprites['1 player win'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(1, 3)]
     sprites['1 player lose'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(3, 5)]
-    sprites['2 player win'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(5, 7)]
-    sprites['2 player lose'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(7, 9)]
+    sprites['2 player lose'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(5, 7)]
+    sprites['2 player win'] = [pygame.image.load(f'data/restart_bar_{str(i)}.png') for i in range(7, 9)]
     return sprites
 
 
