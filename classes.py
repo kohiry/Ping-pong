@@ -355,6 +355,8 @@ class Enemy:
     def __init__(self, x, y, width, height, speed):
         self.x = x
         self.y = y
+        self.ball = []
+        self.size = ''
         self.height = height
         self.width = width
         self.speed = speed
@@ -363,13 +365,26 @@ class Enemy:
         self.clock = pygame.time.Clock()
         self.rect = pygame.Rect(x, y, width, height)
 
-    def AI(self, y, display_height):  # y - координата объекта ball
+    def add_ball(self, ball):
+        self.ball.append(ball)
 
+    def add_size(self, size):
+        self.size = size
+
+    def AI(self, y, display_height):  # y - координата объекта ball
+        # дбоавить объект класса ball чтобы следить за его скоростью, если летит плоско
+        # то берём другую скоростью
         if self.y + (self.height // 2) > y and self.y >= 0:
-            self.y -= self.speed // 60
+            if self.ball[0].angle < 100 and self.ball[0].pos[1] > self.y - self.ball[0].angle * 3:
+                self.y -= self.ball[0].angle
+            else:
+                self.y -= self.ball[0].angle // 60
         elif self.y + (self.height // 2) < y and self.y <= display_height - self.height:
-            self.y += self.speed // 60
-        self.clock.tick(100)
+            if self.ball[0].angle < 100 and self.ball[0].pos[1] < self.y + self.ball[0].angle * 3:
+                self.y += self.ball[0].angle
+            else:
+                self.y += self.ball[0].angle // 60
+        self.clock.tick(60)
 
     def rects(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
