@@ -150,14 +150,13 @@ class Ball:
             self.score.score_clear()
             self.sound.play_score()
         # проверки, если кто-то получил 15 очков, всё обнуляется
-        print(self.game)
-        if self.score.score_enemy == 15:
+        if self.score.score_enemy == 2:
             clear_score()
             if self.game == '1 player':
                 return '1 player lose'
             elif self.game == '2 player':
                 return '2 player lose'
-        elif self.score.score_hero == 15:
+        elif self.score.score_hero == 2:
             clear_score()
             if self.game == '1 player':
                 return '1 player win'

@@ -23,7 +23,7 @@ answer_hero = None
 
 count_tutorial = 0
 count_menu = 0
-count_rastart_mode = 0
+count_rastart_mode = ''
 count_rastart = 0
 
 # данные, нужные для более универсального
@@ -67,7 +67,6 @@ def what_restart_menu(who):
     count_rastart_mode = who
 
 def draw_restart_menu():
-    print(count_rastart_mode, count_rastart)
     screen.blit(restart_sprite[count_rastart_mode][count_rastart], (0, 0))
 
 
@@ -92,6 +91,7 @@ while running:
             if not start:
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     start = True
+
             if ismenu and not game and not game_2 and not restart_menu:
                 sound.play_jump()
                 clock.tick(60)
@@ -122,14 +122,15 @@ while running:
 
             if restart_menu and not ismenu and not game and not game_2:
                 sound.play_jump()
+
                 clock.tick(60)
-                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     count_rastart -= 1
-                    if count_rastart <= 0:
+                    if count_rastart < 0:
                         count_rastart = 1
-                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     count_rastart += 1
-                    if count_rastart > 2:
+                    if count_rastart > 1:
                         count_rastart = 0
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     if count_rastart == 0:
