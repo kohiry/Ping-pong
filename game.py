@@ -40,6 +40,9 @@ hero = classes.Hero(width - x_mobs * 2, y_mobs, width_mob, height_mob, speed_mob
 hero_2 = classes.Hero(x_mobs, y_mobs, width_mob, height_mob, speed_mob)
 ball = classes.Ball((400, 560), screen, 35, hero, enemy, hero_2)
 
+enemy.add_ball(ball)
+enemy.add_size(height)
+
 # объекты дисплейные
 background = classes.DrawBackground()
 sprite_tutorial = classes.tutorial_sprite()
