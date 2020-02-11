@@ -54,10 +54,12 @@ for i in restart_sprite:
 
 def draw_tutorial():  # отрисовка туториала
     global count_tutorial
+    clock = pygame.time.Clock()
     if count_tutorial + 1 >= 150:
         count_tutorial = 0
     screen.blit(sprite_tutorial[count_tutorial // 10], (0, 0))
     count_tutorial += 1
+    clock.tick(10)
 
 def draw_menu():  # отрисовка меню
     screen.blit(sprite_menu[count_menu], (0, 0))
