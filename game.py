@@ -16,9 +16,15 @@ ismenu = False
 start = False
 game = False
 game_2 = False
+restart_menu = False
+
+answer_enemy = None
+answer_hero = None
 
 count_tutorial = 0
 count_menu = 0
+count_rastart_mode = 0
+count_rastart = 0
 
 # данные, нужные для более универсального
 # представления персонажей на разных мониторах
@@ -56,6 +62,16 @@ def draw_tutorial():  # отрисовка туториала
 def draw_menu():  # отрисовка меню
     screen.blit(sprite_menu[count_menu], (0, 0))
 
+def what_restart_menu(who):
+    global count_rastart_mode
+    count_rastart_mode = who
+
+def draw_restart_menu():
+    print(count_rastart_mode, count_rastart)
+    screen.blit(restart_sprite[count_rastart_mode][count_rastart], (0, 0))
+
+
+
 
 running = True
 clock = pygame.time.Clock()
@@ -70,12 +86,13 @@ while running:
                 ismenu = True
                 game = False
                 game_2 = False
+                restart_menu = False
                 ball.score.score_clear()
                 ball.pos = width // 2, height // 2
             if not start:
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     start = True
-            if ismenu and not game and not game_2:
+            if ismenu and not game and not game_2 and not restart_menu:
                 sound.play_jump()
                 clock.tick(60)
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
@@ -92,14 +109,47 @@ while running:
                         start = False
                         game = True
                         game_2 = False
+                        restart_menu = False
                     if count_menu == 2:
                         ismenu = True
                         start = False
                         game = False
                         game_2 = True
+                        restart_menu = False
                     if count_menu == 3:
                         running = False
-                    pygame.time.wait(1000)
+                    pygame.time.wait(500)
+
+            if restart_menu and not ismenu and not game and not game_2:
+                sound.play_jump()
+                clock.tick(60)
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    count_rastart -= 1
+                    if count_rastart <= 0:
+                        count_rastart = 1
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    count_rastart += 1
+                    if count_rastart > 2:
+                        count_rastart = 0
+                if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                    if count_rastart == 0:
+                        ismenu = True
+                        start = False
+                        game = False
+                        game_2 = False
+                        ball.score.score_clear()
+                        ball.pos = width // 2, height // 2
+                        restart_menu = False
+                    if count_rastart == 1:
+                        ismenu = False
+                        start = False
+                        if ball.game == '1 player':
+                            game = True
+                            game_2 = False
+                        if ball.game == '2 player':
+                            game = False
+                            game_2 = True
+                        restart_menu = False
 
     # события клавишей
     keys = pygame.key.get_pressed()
@@ -145,8 +195,8 @@ while running:
         ball.draw(width, height)
         enemy.draw(screen)
         hero.draw(screen)
-        ball.collide(enemy.rects(), width, height, False)
-        ball.collide(hero.rects(), width, height, True)
+        answer_enemy = ball.collide(enemy.rects(), width, height, False)
+        answer_hero = ball.collide(hero.rects(), width, height, True)
 
     if game_2:
         ball.game_mode('2 player')
@@ -156,8 +206,22 @@ while running:
         ball.draw(width, height)
         hero_2.draw(screen)
         hero.draw(screen)
-        ball.collide(hero_2.rects(), width, height, False)
-        ball.collide(hero.rects(), width, height, True)
+        answer_enemy = ball.collide(hero_2.rects(), width, height, False)
+        answer_hero = ball.collide(hero.rects(), width, height, True)
+    if answer_enemy != None:
+        what_restart_menu(answer_enemy)
+        restart_menu = True
+    if answer_hero != None:
+        what_restart_menu(answer_hero)
+        restart_menu = True
+    if restart_menu:  # появление рестарт меню
+        draw_restart_menu()
+        answer_enemy = None
+        answer_hero = None
+        ismenu = False
+        start = False
+        game = False
+        game_2 = False
 
     pygame.display.flip()
 

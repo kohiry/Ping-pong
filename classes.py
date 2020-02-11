@@ -6,6 +6,8 @@ size = width, height = 800, 600
 
 class Ball:
     def __init__(self, coord, screen, width, obj_1, obj_2, obj_3):
+        self.x_rest = 700
+        self.y_rest = 500
         self.speed_start = 700
         self.angle_start = 700
         self.game = '1 player'
@@ -143,12 +145,25 @@ class Ball:
                 self.x, self.y = -self.speed, -self.angle
 
         self.pos = width // 2, height // 2
-        print(self.pos)
 
-        # проверки, если кто-то получил 15 очков, всё обнуляется
-        if self.score.score_enemy == 15 or self.score.score_hero == 15:
+        def clear_score():
             self.score.score_clear()
             self.sound.play_score()
+        # проверки, если кто-то получил 15 очков, всё обнуляется
+        print(self.game)
+        if self.score.score_enemy == 15:
+            clear_score()
+            if self.game == '1 player':
+                return '1 player lose'
+            elif self.game == '2 player':
+                return '2 player lose'
+        elif self.score.score_hero == 15:
+            clear_score()
+            if self.game == '1 player':
+                return '1 player win'
+            elif self.game == '2 player':
+                return '2 player win'
+
 
     def get_score(self):
         return self.score.get_score()
@@ -240,17 +255,11 @@ class Ball:
                     return -module_x, module_x
                 else:
                     return module_x, module_x
-            elif dot == '4':
+            elif dot == '4' or dot == '5':
                 if player:
-                    return -700, -500
+                    return self.run(x, y, self.pos, rect.x - rect.width, height, 0, True)
                 else:
-                    return 700, -500
-            elif dot == '5':
-                if player:
-                    return -700, 500
-                else:
-                    return 700, 500
-
+                    return self.run(x, y, self.pos, width, height, rect.x + rect.width, True)
 
 
         if self.rects().colliderect(rect):
@@ -270,10 +279,13 @@ class Ball:
         else:
             self.x, self.y = self.run(self.x, self.y, self.pos, width + 200, height, 0, False)
         if self.x == 1:
-            self.who_start(width, height, True)
+            answer = self.who_start(width, height, True)
+            if answer != None:
+                return answer
         elif self.x == 2:
-            self.who_start(width, height, False)
-        print(self.y)
+            answer = self.who_start(width, height, False)
+            if answer != None:
+                return answer
         if -50 < self.y < 50:
             if positive_or_negative(self.y):
                 self.y = -100
@@ -358,7 +370,7 @@ class Enemy:
             self.y -= self.speed // 60
         elif self.y + (self.height // 2) < y and self.y <= display_height - self.height:
             self.y += self.speed // 60
-        self.clock.tick(60)
+        self.clock.tick(100)
 
     def rects(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
