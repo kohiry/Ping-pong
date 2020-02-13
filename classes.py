@@ -163,7 +163,6 @@ class Ball:
             elif self.game == '2 player':
                 return '2 player win'
 
-
     def get_score(self):
         return self.score.get_score()
 
@@ -176,7 +175,7 @@ class Ball:
         self.obj[0].speed += speed
         self.speed += speed
         if self.game == '1 player':
-            self.obj[1].speed += speed
+            self.obj[1].speed += speed - (speed // 2)
         elif self.game == '2 player':
             self.obj[2].speed += speed
         return speed
