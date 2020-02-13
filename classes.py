@@ -175,7 +175,7 @@ class Ball:
         self.obj[0].speed += speed
         self.speed += speed
         if self.game == '1 player':
-            self.obj[1].speed += speed - (speed // 2)
+            self.obj[1].speed += speed - (speed // 4)
         elif self.game == '2 player':
             self.obj[2].speed += speed
         return speed
