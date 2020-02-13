@@ -370,7 +370,7 @@ class Enemy:
     def AI(self, y, display_height):  # y - координата объекта ball
         # дбоавить объект класса ball чтобы следить за его скоростью, если летит плоско
         # то берём другую скоростью
-        if self.y - (self.height // 10) <= self.ball[0].pos[1]  <= self.y + self.height - (self.height // 10):
+        if self.y + (self.height // 4) <= self.ball[0].pos[1] <= self.y + self.height - (self.height // 4):
             self.y += 0
         elif self.y + (self.height // 2) > y and self.y >= 0:
             self.y -= self.speed // 60
