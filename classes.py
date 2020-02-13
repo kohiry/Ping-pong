@@ -81,7 +81,7 @@ class Ball:
             if coord[0] >= width:
                 return help(self.speeds_all[3], 'right')
 
-            if coord[1] >= height:
+            if coord[1] >= height - self.width:
                 self.sound.play_jump()
                 return self.speeds_all[2]
             else:
@@ -102,7 +102,7 @@ class Ball:
             if coord[0] <= start:
                 return help(self.speeds_all[1], 'left')
 
-            if coord[1] >= height:
+            if coord[1] >= height - self.width:
                 # звук отпрыгивания
                 return self.speeds_all[0]
             else:

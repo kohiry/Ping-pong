@@ -4,7 +4,7 @@ pygame.init()
 from screeninfo import get_monitors
 
 
-# size = width, height = 1280, 720
+# size = width, height = 1336, 768
 size = width, height = get_monitors()[0].width, get_monitors()[0].height
 # screen = pygame.display.set_mode(size)
 screen = pygame.display.set_mode((0, 0), pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
