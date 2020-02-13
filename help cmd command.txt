@@ -1,0 +1,1 @@
+pyinstaller --onefile --icon=data\icon.ico --noconsole game.py 
