@@ -145,7 +145,7 @@ class Ball:
                 self.x, self.y = -self.speed, -self.angle
 
         self.pos = width // 2, height // 2
-
+        self.update_speed()
         def clear_score():
             self.score.score_clear()
             self.sound.play_score()
@@ -171,11 +171,10 @@ class Ball:
         return pygame.Rect(*self.pos, self.width, self.width)
 
     def update_speed(self):
-        speed = 25
+        speed = 50
         # обновление скоростей для всех объектов
         self.obj[0].speed += speed
         self.speed += speed
-        self.angle += speed
         if self.game == '1 player':
             self.obj[1].speed += speed
         elif self.game == '2 player':
@@ -371,20 +370,12 @@ class Enemy:
     def AI(self, y, display_height):  # y - координата объекта ball
         # дбоавить объект класса ball чтобы следить за его скоростью, если летит плоско
         # то берём другую скоростью
-        if self.y + (self.height // 2) > y and self.y >= 0:
-            if self.ball[0].angle == 0:
-                self.y -= 10
-            elif self.ball[0].angle < 100 and self.ball[0].pos[1] > self.y - self.ball[0].angle * 3:
-                self.y -= self.ball[0].angle
-            else:
-                self.y -= self.ball[0].angle // 60
+        if self.y <= self.ball[0].pos[1]  <= self.y + self.height:
+            self.y += 0
+        elif self.y + (self.height // 2) > y and self.y >= 0:
+            self.y -= self.speed // 60
         elif self.y + (self.height // 2) < y and self.y <= display_height - self.height:
-            if self.ball[0].angle == 0:
-                self.y += 10
-            elif self.ball[0].angle < 100 and self.ball[0].pos[1] < self.y + self.ball[0].angle * 3:
-                self.y += self.ball[0].angle
-            else:
-                self.y += self.ball[0].angle // 60
+            self.y += self.speed // 60
         self.clock.tick(60)
 
     def rects(self):
